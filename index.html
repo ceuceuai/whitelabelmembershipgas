@@ -712,16 +712,6 @@
         }
         function formatRupiah(nom) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(nom || 0); }
 
-        function renderMembers(tbody, row) {
-            const isAdm = row['Tier_Akses']==='Admin';
-            tbody.innerHTML += `<tr>
-                <td class="font-mono text-xs text-gray-500">${row['User_ID']}</td>
-                <td class="font-semibold text-gray-800">${row['Nama']}</td><td>${row['Email']}</td>
-                <td><span class="px-2 py-1 bg-${isAdm?'purple':'blue'}-100 text-${isAdm?'purple':'blue'}-700 rounded text-xs font-bold">${row['Tier_Akses']}</span></td>
-                <td class="font-mono text-xs">${row['Affiliate_Code']}</td><td>${formatDate(row['Tanggal_Daftar'])}</td>
-            </tr>`;
-        }
-
         function renderProducts(tbody, row) {
             const imgUrl = row['Image_URL'] || 'https://placehold.co/100x100/eeeeee/999999?text=No+Image';
             const linkAkses = row['Link_Akses'] && row['Link_Akses'] !== "" ? `<a href="${row['Link_Akses']}" target="_blank" class="text-xs bg-gray-100 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg font-medium transition-colors inline-flex items-center"><i class="fa-solid fa-link mr-1"></i> Buka Akses</a>` : '-';
@@ -733,6 +723,10 @@
             } else {
                 komisiTampil = `<span class="text-blue-600 font-medium">${formatRupiah(komisiTampil)}</span>`;
             }
+
+            // GENERATE LINK CHECKOUT OTOMATIS
+            const domain = window.location.origin + window.location.pathname.replace('index.html', '');
+            const checkoutUrl = `${domain}/checkout.html?prod=${row['Product_ID']}`;
 
             tbody.innerHTML += `<tr>
                 <td>
@@ -746,9 +740,34 @@
                 </td>
                 <td class="text-green-600 font-bold">${formatRupiah(row['Harga'])}</td>
                 <td>${komisiTampil}</td>
-                <td>${linkAkses}</td>
+                <td>
+                    <div class="flex flex-col gap-2 items-start">
+                        <button onclick="copyToClipboard(this, '${checkoutUrl}')" class="text-xs bg-gray-900 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg font-medium transition-colors inline-flex items-center shadow-sm">
+                            <i class="fa-regular fa-copy mr-1"></i> Link Checkout
+                        </button>
+                        ${linkAkses}
+                    </div>
+                </td>
                 <td><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">${row['Status']}</span></td>
             </tr>`;
+        }
+
+        // FUNGSI COPY LINK CHECKOUT
+        function copyToClipboard(btnElement, text) {
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            const originalHTML = btnElement.innerHTML;
+            btnElement.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Tersalin!';
+            btnElement.classList.replace('bg-gray-900', 'bg-green-500');
+            setTimeout(() => { 
+                btnElement.innerHTML = originalHTML; 
+                btnElement.classList.replace('bg-green-500', 'bg-gray-900'); 
+            }, 2000);
         }
 
         function renderTransactions(tbody, row) {
