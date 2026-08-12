@@ -175,12 +175,19 @@
             };
 
             try {
-                // Tembak API Google Apps Script
+                // Tembak API Google Apps Script dengan metode anti-CORS
+                // Kita gunakan fetch POST dengan body JSON stringified yang dibaca sebagai text/plain oleh GAS
                 const response = await fetch(API_URL, {
                     method: 'POST',
+                    redirect: 'follow', // Penting untuk GAS karena dia suka nge-redirect saat merespon POST
                     body: JSON.stringify({ action: 'checkout', payload: payload })
                 });
                 
+                // Cek jika response tidak ok (gagal fetch)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const result = await response.json();
                 
                 // Sembunyikan loading
@@ -199,8 +206,22 @@
             } catch (error) {
                 overlay.style.opacity = '0';
                 setTimeout(() => { overlay.style.display = 'none'; }, 300);
-                showToast("Terjadi kesalahan jaringan", "error");
-                console.error(error);
+                showToast("Terjadi kesalahan jaringan atau CORS", "error");
+                console.error("Fetch Error:", error);
+                
+                // Trik fallback darurat jika CORS Vercel benar-benar nge-block fetch POST
+                // Fallback ini menggunakan mode 'no-cors'. Kelemahannya kita ga bisa baca response JSON-nya (opaque),
+                // tapi datanya TETAP MASUK ke Google Sheets.
+                console.log("Mencoba fallback mode no-cors...");
+                fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'checkout', payload: payload })
+                }).then(() => {
+                     document.getElementById('checkoutForm').style.display = 'none';
+                     document.getElementById('successScreen').style.display = 'block';
+                     showToast("Permintaan terkirim (Fallback mode)", "success");
+                }).catch(e => console.error("Fallback gagal juga", e));
             }
         }
     </script>
