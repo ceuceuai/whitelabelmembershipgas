@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whitelabel Membership | Login</title>
+    <title>Dashboard | Whitelabel Membership</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -49,7 +50,6 @@
             justify-content: center; align-items: center; transition: opacity 0.3s ease;
         }
 
-        /* Styling Animasi Pesan Error/Sukses */
         .toast-msg {
             position: fixed; top: 20px; right: 20px; z-index: 10000;
             padding: 15px 25px; border-radius: 8px; font-weight: 600;
@@ -79,8 +79,8 @@
             <!-- Kiri: Desain Branding -->
             <div class="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 p-12 flex-col justify-between text-white relative overflow-hidden">
                 <div class="relative z-10">
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-xl backdrop-blur-sm mb-6">WM</div>
-                    <h1 class="text-4xl font-extrabold mb-4 leading-tight">Mulai Bisnis<br>Digital Anda.</h1>
+                    <div id="authBrandLogo" class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-xl backdrop-blur-sm mb-6">WM</div>
+                    <h1 id="authBrandName" class="text-4xl font-extrabold mb-4 leading-tight">Mulai Bisnis<br>Digital Anda.</h1>
                     <p class="text-blue-100 opacity-90">Kelola member, produk, dan sistem affiliate dalam satu ekosistem yang terintegrasi secara seamless.</p>
                 </div>
                 <!-- Abstract Circles -->
@@ -114,7 +114,7 @@
                     </p>
                 </div>
 
-                <!-- Form Register (Disembunyikan default) -->
+                <!-- Form Register -->
                 <div id="formRegisterContainer" style="display: none;">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Buat Akun Baru</h2>
                     <p class="text-sm text-gray-500 mb-6">Daftar sekarang untuk mendapatkan akses ke platform.</p>
@@ -145,36 +145,36 @@
         </div>
     </div>
 
-    <!-- VIEW 2: DASHBOARD APP (Disembunyikan saat belum login) -->
+    <!-- VIEW 2: DASHBOARD APP -->
     <div id="dashboardView" class="h-full w-full flex" style="display: none;">
         <!-- Sidebar -->
         <aside class="w-64 bg-sidebar text-gray-300 flex flex-col h-full hidden md:flex flex-shrink-0">
             <div class="h-20 flex items-center px-6 border-b border-gray-800">
-                <div class="w-10 h-10 bg-brandblue rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30 mr-3">WM</div>
+                <div id="sidebarBrandLogo" class="w-10 h-10 bg-brandblue rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30 mr-3 overflow-hidden">WM</div>
                 <div>
-                    <h1 class="text-white font-bold text-sm tracking-wide leading-tight">Whitelabel</h1>
+                    <h1 id="sidebarBrandName" class="text-white font-bold text-sm tracking-wide leading-tight">Whitelabel</h1>
                     <p class="text-[10px] text-blue-400 tracking-wider uppercase mt-1">Membership</p>
                 </div>
             </div>
 
             <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group">
+                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all">
                     <i class="fa-solid fa-border-all w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Dashboard</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group">
+                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
                     <i class="fa-solid fa-users w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Member</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group">
+                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
                     <i class="fa-solid fa-box w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Produk</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group">
+                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
                     <i class="fa-solid fa-wallet w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Transaksi</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group">
+                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
                     <i class="fa-solid fa-handshake w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Affiliate</span>
                 </a>
@@ -217,49 +217,53 @@
                     <!-- Welcome Banner -->
                     <div class="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg flex items-center justify-between relative overflow-hidden">
                         <div class="relative z-10">
-                    <div class="absolute -right-10 -bottom-20 opacity-30 text-9xl"><i class="fa-solid fa-chart-line"></i></div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-                        <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Member</p>
-                        <h3 id="statTotalMember" class="text-3xl font-extrabold mb-1">...</h3>
-                        <div class="card-decoration"></div>
-                    </div>
-                    <div class="bg-gradient-to-br from-indigo-500 to-purple-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-                        <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Transaksi</p>
-                        <h3 id="statTotalTx" class="text-3xl font-extrabold mb-1">...</h3>
-                        <div class="card-decoration"></div>
-                    </div>
-                    <div class="bg-gradient-to-br from-pink-500 to-rose-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-                        <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Pendapatan</p>
-                        <h3 id="statTotalRev" class="text-3xl font-extrabold mb-1">...</h3>
-                        <div class="card-decoration"></div>
-                    </div>
-                    <div class="bg-gradient-to-br from-emerald-500 to-green-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-                        <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Member Aktif</p>
-                        <h3 id="statActiveMember" class="text-3xl font-extrabold mb-1">...</h3>
-                        <div class="card-decoration"></div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-md border border-gray-100">
-                        <h3 class="text-lg font-bold text-gray-800 mb-6">Grafik Aktivitas</h3>
-                        <div class="relative h-64 w-full"><canvas id="transactionChart"></canvas></div>
+                            <h2 class="text-2xl font-bold mb-1">Halo, <span id="welcomeName">Member</span>! 👋</h2>
+                            <p class="text-indigo-100 text-sm">Pantau aktivitas penjualan dan komisi affiliate Anda hari ini.</p>
+                        </div>
+                        <div class="absolute -right-10 -bottom-20 opacity-30 text-9xl"><i class="fa-solid fa-chart-line"></i></div>
                     </div>
 
-                    <div class="flex flex-col gap-6">
-                        <div class="bg-white rounded-2xl p-6 shadow-md border border-blue-100">
-                            <h3 class="text-base font-bold text-gray-800 mb-2"><i class="fa-solid fa-link text-blue-500 mr-2"></i> Link Affiliate Anda</h3>
-                            <p class="text-xs text-gray-500 mb-4">Sebarkan link ini, dapatkan komisi Rp 50.000 per penjualan sukses!</p>
-                            
-                            <div class="relative mb-2">
-                                <input type="text" id="affLink" value="..." readonly class="w-full bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-lg px-4 py-3 outline-none">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                            <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Member</p>
+                            <h3 id="statTotalMember" class="text-3xl font-extrabold mb-1">...</h3>
+                            <div class="card-decoration"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                            <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Transaksi</p>
+                            <h3 id="statTotalTx" class="text-3xl font-extrabold mb-1">...</h3>
+                            <div class="card-decoration"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-pink-500 to-rose-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                            <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Pendapatan</p>
+                            <h3 id="statTotalRev" class="text-3xl font-extrabold mb-1">...</h3>
+                            <div class="card-decoration"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-emerald-500 to-green-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                            <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Member Aktif</p>
+                            <h3 id="statActiveMember" class="text-3xl font-extrabold mb-1">...</h3>
+                            <div class="card-decoration"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                            <h3 class="text-lg font-bold text-gray-800 mb-6">Grafik Aktivitas</h3>
+                            <div class="relative h-64 w-full"><canvas id="transactionChart"></canvas></div>
+                        </div>
+
+                        <div class="flex flex-col gap-6">
+                            <div class="bg-white rounded-2xl p-6 shadow-md border border-blue-100">
+                                <h3 class="text-base font-bold text-gray-800 mb-2"><i class="fa-solid fa-link text-blue-500 mr-2"></i> Link Affiliate Anda</h3>
+                                <p class="text-xs text-gray-500 mb-4">Sebarkan link ini, dapatkan komisi Rp 50.000 per penjualan sukses!</p>
+                                
+                                <div class="relative mb-2">
+                                    <input type="text" id="affLink" value="..." readonly class="w-full bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-lg px-4 py-3 outline-none">
+                                </div>
+                                <button onclick="copyAffiliateLink(this)" class="w-full bg-gray-900 hover:bg-blue-600 text-white font-medium rounded-lg text-sm px-5 py-3 transition-colors shadow-md flex justify-center items-center">
+                                    <i class="fa-regular fa-copy mr-2"></i> Salin Link
+                                </button>
                             </div>
-                            <button onclick="copyAffiliateLink(this)" class="w-full bg-gray-900 hover:bg-blue-600 text-white font-medium rounded-lg text-sm px-5 py-3 transition-colors shadow-md flex justify-center items-center">
-                                <i class="fa-regular fa-copy mr-2"></i> Salin Link
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -273,12 +277,28 @@
                                 <i class="fa-solid fa-store"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-bold text-gray-800">Pengaturan Checkout & Pembayaran</h3>
-                                <p class="text-sm text-gray-500">Atur nomor WhatsApp admin dan rekening bank yang tampil di halaman checkout pembeli.</p>
+                                <h3 class="text-lg font-bold text-gray-800">Pengaturan Toko & Pembayaran</h3>
+                                <p class="text-sm text-gray-500">Sesuaikan brand toko, nomor WhatsApp, dan rekening pembayaran.</p>
                             </div>
                         </div>
 
                         <form id="settingsForm" onsubmit="handleSaveSettings(event)">
+                            
+                            <!-- Bagian Identitas Brand -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 pb-6 border-b border-gray-100">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Nama Brand / Toko</label>
+                                    <input type="text" id="setStoreName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="Misal: KelasBisnis.com">
+                                    <p class="text-xs text-gray-500 mt-2">Nama ini akan tampil di Sidebar dan Halaman Checkout.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">URL Logo Toko (Opsional)</label>
+                                    <input type="text" id="setStoreLogo" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="https://imgur.com/logo-anda.png">
+                                    <p class="text-xs text-gray-500 mt-2">Link gambar logo. Kosongkan jika ingin pakai teks inisial.</p>
+                                </div>
+                            </div>
+
+                            <!-- Bagian Pembayaran -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Nomor WhatsApp Admin</label>
@@ -288,12 +308,12 @@
                                         </span>
                                         <input type="text" id="setWa" class="rounded-none rounded-r-xl border border-gray-200 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-3 outline-none" placeholder="81234567890">
                                     </div>
-                                    <p class="text-xs text-gray-500 mt-2">Nomor untuk menerima konfirmasi transfer. Awali dengan angka 8.</p>
+                                    <p class="text-xs text-gray-500 mt-2">Nomor untuk menerima bukti transfer dari pembeli.</p>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">URL Gambar QRIS Statis</label>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">URL Gambar QRIS Statis (Opsional)</label>
                                     <input type="text" id="setQris" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="https://imgur.com/qris-anda.png">
-                                    <p class="text-xs text-gray-500 mt-2">Link gambar QRIS (opsional). Kosongkan jika tidak pakai QRIS.</p>
+                                    <p class="text-xs text-gray-500 mt-2">Link gambar barcode QRIS. Kosongkan jika tidak pakai QRIS.</p>
                                 </div>
                             </div>
                             
@@ -324,19 +344,17 @@
     </div>
 
     <script>
-        // MASUKIN URL WEB APP GAS LU DI SINI!!
+        // MASUKIN URL WEB APP GAS LO DI SINI!!
         const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec";
 
-        // Fungsi Keamanan: Hashing Password pakai SHA-256 bawaan Browser
         async function hashPassword(password) {
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex; // Mengembalikan string kode acak 64 karakter
+            return hashHex; 
         }
 
-        // Toggle tampilan form Login vs Register
         function toggleAuthView(view) {
             if(view === 'register') {
                 document.getElementById('formLoginContainer').style.display = 'none';
@@ -347,7 +365,6 @@
             }
         }
 
-        // Tampilkan Custom Alert / Toast Message
         function showToast(message, type) {
             const toast = document.getElementById('toast');
             toast.innerText = message;
@@ -355,89 +372,77 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // Fungsi Tampilkan/Sembunyikan Loading
         function showLoading(text) {
             document.getElementById('loadingText').innerText = text;
             const overlay = document.getElementById('loadingOverlay');
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 10);
         }
+        
         function hideLoading() {
             const overlay = document.getElementById('loadingOverlay');
             overlay.style.opacity = '0';
             setTimeout(() => { overlay.style.display = 'none'; }, 300);
         }
 
-        // Handle Form Submit (Login & Register)
         async function handleAuth(e, action) {
             e.preventDefault();
+            showLoading(action === 'login' ? "Memeriksa kredensial..." : "Membuat akun baru...");
             
             try {
                 let payload = {};
-                
                 if(action === 'login') {
-                    showLoading("Memeriksa kredensial...");
                     const plainPass = document.getElementById('loginPassword').value;
-                    const hashedPass = await hashPassword(plainPass); // Proses Hashing disini
-                    
-                    payload = {
-                        email: document.getElementById('loginEmail').value,
-                        password: hashedPass
-                    };
+                    payload = { email: document.getElementById('loginEmail').value, password: await hashPassword(plainPass) };
                 } else {
-                    showLoading("Membuat akun baru...");
                     const plainPass = document.getElementById('regPassword').value;
-                    if(plainPass.length < 6) {
-                        hideLoading();
-                        return showToast("Password minimal 6 karakter!", "error");
-                    }
-                    const hashedPass = await hashPassword(plainPass); // Proses Hashing disini
-                    
+                    if(plainPass.length < 6) throw new Error("Password minimal 6 karakter!");
                     payload = {
                         nama: document.getElementById('regName').value,
                         email: document.getElementById('regEmail').value,
-                        password: hashedPass
+                        password: await hashPassword(plainPass)
                     };
                 }
 
-                // Kirim request ke Google Apps Script
+                // FIX CORS & REDIRECT ISSUE
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: action, payload: payload }) // Dikirim sebagai Text Plain by default di fetch, aman dari preflight CORS di GAS
+                    redirect: 'follow', // Penting biar gak di-block pas GAS nge-redirect URL
+                    body: JSON.stringify({ action: action, payload: payload })
                 });
                 
-                const result = await response.json();
-                hideLoading();
-
+                const textResponse = await response.text();
+                // Cegah JSON parse error kalau balasan dari google berupa halaman HTML peringatan
+                if(textResponse.trim().startsWith('<')) {
+                    throw new Error("Gagal terhubung. Pastikan Web App di-deploy dengan izin 'Anyone'.");
+                }
+                
+                const result = JSON.parse(textResponse);
+                
                 if(result.status === 'success') {
                     showToast(result.message, "success");
-                    // Simpan data user di memori browser
                     sessionStorage.setItem('wm_user', JSON.stringify(result.user));
-                    // Pindah ke halaman Dashboard
                     checkLoginState();
                 } else {
                     showToast(result.message, "error");
                 }
-
             } catch (error) {
-                hideLoading();
                 console.error(error);
-                showToast("Terjadi kesalahan jaringan.", "error");
+                showToast(error.message || "Terjadi kesalahan jaringan.", "error");
+            } finally {
+                // Pastikan loading selalu ditutup apapun hasilnya
+                hideLoading();
             }
         }
 
-        // Cek State Login, apakah nampilin form auth atau dashboard
         function checkLoginState() {
             const userData = sessionStorage.getItem('wm_user');
             
             if (userData) {
-                // User sudah login
                 const user = JSON.parse(userData);
                 document.getElementById('authView').style.display = 'none';
                 document.getElementById('dashboardView').style.display = 'flex';
-                document.title = "Dashboard | Whitelabel Membership";
                 
-                // Inject Data Personal ke Dashboard
                 const inisial = user.nama.charAt(0).toUpperCase();
                 document.getElementById('sidebarUserName').innerText = user.nama;
                 document.getElementById('welcomeName').innerText = user.nama.split(" ")[0];
@@ -445,74 +450,61 @@
                 document.getElementById('sidebarUserInisial').innerText = inisial;
                 document.getElementById('headerUserInisial').innerText = inisial;
                 
-                // Generate Link Affiliate
                 const domain = window.location.origin + window.location.pathname.replace('index.html', '');
                 document.getElementById('affLink').value = `${domain}checkout.html?aff=${user.affCode}`;
 
-                // Fetch Data Statistik global/personal
                 fetchDashboardStats();
                 setupChart();
+                
+                // Load settings in background to update brand logo/name on dashboard
+                fetchStoreSettings(true); 
             } else {
-                // User belum login
                 document.getElementById('authView').style.display = 'flex';
                 document.getElementById('dashboardView').style.display = 'none';
-                document.title = "Login | Whitelabel Membership";
+                // Fetch setting for Auth page branding
+                fetchStoreSettings(true); 
             }
         }
 
-        // Fungsi Logout
         function doLogout() {
             sessionStorage.removeItem('wm_user');
-            checkLoginState(); // Balik ke halaman login
+            checkLoginState();
             showToast("Anda telah keluar.", "success");
         }
 
-        // Fetch Data Statistik (Dipanggil pas masuk dashboard)
         async function fetchDashboardStats() {
             try {
                 const response = await fetch(API_URL + "?action=getStats");
                 const stats = await response.json();
-
                 if(stats.status === 'success') {
                     document.getElementById('statTotalMember').innerText = stats.totalMember;
                     document.getElementById('statTotalTx').innerText = stats.totalTransaksi;
                     document.getElementById('statTotalRev').innerText = stats.totalPendapatan;
                     document.getElementById('statActiveMember').innerText = stats.memberAktif;
                 }
-            } catch (error) {
-                console.error("Gagal nyambung API:", error);
-            }
+            } catch (e) { console.error("Gagal nyambung API:", e); }
         }
 
-        // Fungsi Copy Link
         function copyAffiliateLink(btnElement) {
             const copyText = document.getElementById("affLink");
             copyText.select();
             copyText.setSelectionRange(0, 99999);
             document.execCommand("copy");
-
             const originalHTML = btnElement.innerHTML;
             btnElement.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Tersalin!';
             btnElement.classList.replace('bg-gray-900', 'bg-green-500');
-            
             setTimeout(() => {
                 btnElement.innerHTML = originalHTML;
                 btnElement.classList.replace('bg-green-500', 'bg-gray-900');
             }, 2000);
         }
-
-        // --- SISTEM NAVIGASI TAB & SETTINGS ---
         
         function switchTab(tabName) {
-            // Sembunyiin semua tab
             document.getElementById('tab-dashboard').style.display = 'none';
             document.getElementById('tab-settings').style.display = 'none';
-            
-            // Reset style menu sidebar
             document.getElementById('nav-dashboard').className = "flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all";
             document.getElementById('nav-settings').className = "flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all";
             
-            // Tampilkan tab yang dipilih
             if(tabName === 'dashboard') {
                 document.getElementById('tab-dashboard').style.display = 'block';
                 document.getElementById('nav-dashboard').className = "flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all";
@@ -521,7 +513,7 @@
                 document.getElementById('tab-settings').style.display = 'block';
                 document.getElementById('nav-settings').className = "flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all";
                 document.getElementById('headerTitle').innerText = "Pengaturan Toko";
-                fetchStoreSettings(); // Load data pas tab dibuka
+                fetchStoreSettings(false); 
             }
         }
 
@@ -540,34 +532,56 @@
             container.appendChild(div);
         }
 
-        async function fetchStoreSettings() {
-            showLoading("Memuat pengaturan...");
+        async function fetchStoreSettings(isBackground = false) {
+            if(!isBackground) showLoading("Memuat pengaturan...");
             try {
-                const response = await fetch(API_URL + "?action=getSettings", { method: 'GET', redirect: 'follow' });
-                const result = await response.json();
+                const response = await fetch(API_URL + "?action=getSettings", { redirect: 'follow' });
+                const textResp = await response.text();
+                if(textResp.trim().startsWith('<')) throw new Error("Format HTML terdeteksi");
+                const result = JSON.parse(textResp);
                 
                 if (result.status === 'success' && result.settings) {
-                    // Buang awalan 62 dari database biar pas di inputan
-                    let waNum = result.settings.waAdmin || "";
-                    if(waNum.startsWith('62')) waNum = waNum.substring(2);
+                    const set = result.settings;
                     
-                    document.getElementById('setWa').value = waNum;
-                    document.getElementById('setQris').value = result.settings.qrisImage || "";
+                    // Update Identitas UI (Branding)
+                    const storeName = set.storeName || "Whitelabel";
+                    document.title = `Dashboard | ${storeName}`;
+                    document.getElementById('sidebarBrandName').innerText = storeName;
+                    document.getElementById('authBrandName').innerHTML = `Mulai Bisnis<br>${storeName}.`;
                     
-                    const container = document.getElementById('bankList');
-                    container.innerHTML = ''; // bersihkan list lama
-                    
-                    if (result.settings.banks && result.settings.banks.length > 0) {
-                        result.settings.banks.forEach(b => addBankField(b.bank, b.rek, b.owner));
+                    if (set.storeLogo && set.storeLogo.startsWith('http')) {
+                        const imgHtml = `<img src="${set.storeLogo}" class="w-full h-full object-cover" alt="Logo">`;
+                        document.getElementById('sidebarBrandLogo').innerHTML = imgHtml;
+                        document.getElementById('authBrandLogo').innerHTML = imgHtml;
+                        document.getElementById('authBrandLogo').classList.remove('bg-white/20');
                     } else {
-                        addBankField(); // Tambah 1 form kosong default
+                        const initHtml = storeName.substring(0, 2).toUpperCase();
+                        document.getElementById('sidebarBrandLogo').innerHTML = initHtml;
+                        document.getElementById('authBrandLogo').innerHTML = initHtml;
+                    }
+
+                    // Kalau fungsi dipanggil buat ngisi Form Setting
+                    if(!isBackground) {
+                        document.getElementById('setStoreName').value = set.storeName || "";
+                        document.getElementById('setStoreLogo').value = set.storeLogo || "";
+                        
+                        let waNum = set.waAdmin || "";
+                        if(waNum.startsWith('62')) waNum = waNum.substring(2);
+                        document.getElementById('setWa').value = waNum;
+                        document.getElementById('setQris').value = set.qrisImage || "";
+                        
+                        const container = document.getElementById('bankList');
+                        container.innerHTML = '';
+                        if (set.banks && set.banks.length > 0) {
+                            set.banks.forEach(b => addBankField(b.bank, b.rek, b.owner));
+                        } else { addBankField(); }
                     }
                 }
             } catch (e) {
                 console.error("Gagal memuat setting:", e);
-                showToast("Gagal memuat pengaturan toko", "error");
+                if(!isBackground) showToast("Gagal memuat pengaturan toko", "error");
             } finally {
-                hideLoading();
+                if(!isBackground) hideLoading();
             }
         }
 
@@ -575,28 +589,23 @@
             e.preventDefault();
             showLoading("Menyimpan pengaturan...");
             
-            // Format ulang WA admin, pastiin ada 62 di depannya
             let waRaw = document.getElementById('setWa').value.replace(/\D/g,'');
             if (waRaw.startsWith('0')) waRaw = waRaw.substring(1);
-            const waFinal = waRaw ? "62" + waRaw : "";
-
-            const qris = document.getElementById('setQris').value;
             
-            // Ambil semua data bank dari inputan dinamis
             const bankItems = document.querySelectorAll('.bank-item');
             let banksArr = [];
             bankItems.forEach(item => {
                 const bName = item.querySelector('.bank-name').value;
                 const bRek = item.querySelector('.bank-rek').value;
                 const bOwner = item.querySelector('.bank-owner').value;
-                if(bName && bRek) {
-                    banksArr.push({ bank: bName, rek: bRek, owner: bOwner });
-                }
+                if(bName && bRek) banksArr.push({ bank: bName, rek: bRek, owner: bOwner });
             });
 
             const payload = {
-                waAdmin: waFinal,
-                qrisImage: qris,
+                storeName: document.getElementById('setStoreName').value,
+                storeLogo: document.getElementById('setStoreLogo').value,
+                waAdmin: waRaw ? "62" + waRaw : "",
+                qrisImage: document.getElementById('setQris').value,
                 banks: banksArr
             };
 
@@ -606,57 +615,39 @@
                     redirect: 'follow', 
                     body: JSON.stringify({ action: 'saveSettings', payload: payload })
                 });
-                const result = await response.json();
+                const textResp = await response.text();
+                if(textResp.trim().startsWith('<')) throw new Error("Format HTML terdeteksi");
+                const result = JSON.parse(textResp);
                 
                 if(result.status === 'success') {
                     showToast("Pengaturan berhasil disimpan!", "success");
-                } else {
-                    showToast("Gagal: " + result.message, "error");
-                }
+                    fetchStoreSettings(true); // Update brand UI
+                } else { showToast("Gagal: " + result.message, "error"); }
             } catch (error) {
-                // Fallback no-cors
-                fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({ action: 'saveSettings', payload: payload })
-                }).then(() => {
-                    showToast("Pengaturan disimpan (Mode Fallback)!", "success");
-                }).catch(e => showToast("Gagal menyambung ke server.", "error"));
-            } finally {
-                hideLoading();
-            }
+                showToast("Gagal menyimpan ke server.", "error");
+            } finally { hideLoading(); }
         }
 
-        // Setup Grafik Dummy
         function setupChart() {
             const ctx = document.getElementById('transactionChart').getContext('2d');
-            if(window.myChart) return; // Jangan bikin ulang kalau udah ada
-            
+            if(window.myChart) return;
             let gradient = ctx.createLinearGradient(0, 0, 0, 400);
             gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');   
             gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
-
             window.myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
                     datasets: [{
-                        label: 'Klik Link Affiliate',
-                        data: [12, 19, 15, 25, 22, 30, 28],
-                        borderColor: '#3b82f6',
-                        backgroundColor: gradient,
-                        borderWidth: 3, fill: true, tension: 0.4
+                        label: 'Klik Link', data: [12, 19, 15, 25, 22, 30, 28],
+                        borderColor: '#3b82f6', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4
                     }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
-        // Jalankan pas halaman diload pertama kali
-        window.addEventListener('DOMContentLoaded', () => {
-            // Langsung cek apakah udah pernah login atau belum
-            checkLoginState();
-        });
+        window.addEventListener('DOMContentLoaded', () => { checkLoginState(); });
     </script>
 </body>
 </html>
