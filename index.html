@@ -158,7 +158,7 @@
             </div>
 
             <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-                <a href="#" class="flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group">
+                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group">
                     <i class="fa-solid fa-border-all w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Dashboard</span>
                 </a>
@@ -177,6 +177,11 @@
                 <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group">
                     <i class="fa-solid fa-handshake w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Affiliate</span>
+                </a>
+                <!-- MENU PENGATURAN -->
+                <a href="#" onclick="switchTab('settings')" id="nav-settings" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
+                    <i class="fa-solid fa-gear w-6 text-center text-lg"></i>
+                    <span class="ml-3 text-sm font-medium">Pengaturan</span>
                 </a>
             </div>
 
@@ -198,20 +203,20 @@
         <main class="flex-1 flex flex-col h-full overflow-hidden">
             <header class="h-20 bg-white/50 backdrop-blur-sm px-8 flex items-center justify-between border-b border-gray-100 flex-shrink-0">
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+                    <h2 class="text-xl font-bold text-gray-800" id="headerTitle">Dashboard</h2>
                 </div>
                 <div class="flex items-center space-x-4">
                     <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold" id="headerUserInisial">U</div>
                 </div>
             </header>
 
-            <div class="flex-1 overflow-y-auto p-8 space-y-6">
-                <!-- Welcome Banner -->
-                <div class="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg flex items-center justify-between relative overflow-hidden">
-                    <div class="relative z-10">
-                        <h2 class="text-2xl font-bold mb-1">Selamat Datang, <span id="welcomeName">User</span>! 👋</h2>
-                        <p class="text-indigo-200 text-sm">Cek performa affiliate dan transaksi Anda hari ini.</p>
-                    </div>
+            <div class="flex-1 overflow-y-auto p-8">
+                
+                <!-- TAB DASHBOARD -->
+                <div id="tab-dashboard" class="space-y-6">
+                    <!-- Welcome Banner -->
+                    <div class="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg flex items-center justify-between relative overflow-hidden">
+                        <div class="relative z-10">
                     <div class="absolute -right-10 -bottom-20 opacity-30 text-9xl"><i class="fa-solid fa-chart-line"></i></div>
                 </div>
 
@@ -258,6 +263,62 @@
                         </div>
                     </div>
                 </div>
+                <!-- END TAB DASHBOARD -->
+
+                <!-- TAB SETTINGS -->
+                <div id="tab-settings" class="space-y-6" style="display: none;">
+                    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                        <div class="flex items-center mb-6">
+                            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl mr-3">
+                                <i class="fa-solid fa-store"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">Pengaturan Checkout & Pembayaran</h3>
+                                <p class="text-sm text-gray-500">Atur nomor WhatsApp admin dan rekening bank yang tampil di halaman checkout pembeli.</p>
+                            </div>
+                        </div>
+
+                        <form id="settingsForm" onsubmit="handleSaveSettings(event)">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Nomor WhatsApp Admin</label>
+                                    <div class="flex">
+                                        <span class="inline-flex items-center px-4 text-sm text-gray-900 bg-gray-100 border border-r-0 border-gray-200 rounded-l-xl font-bold">
+                                            <i class="fa-brands fa-whatsapp text-green-500 mr-2"></i> +62
+                                        </span>
+                                        <input type="text" id="setWa" class="rounded-none rounded-r-xl border border-gray-200 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-3 outline-none" placeholder="81234567890">
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2">Nomor untuk menerima konfirmasi transfer. Awali dengan angka 8.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">URL Gambar QRIS Statis</label>
+                                    <input type="text" id="setQris" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="https://imgur.com/qris-anda.png">
+                                    <p class="text-xs text-gray-500 mt-2">Link gambar QRIS (opsional). Kosongkan jika tidak pakai QRIS.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
+                                    <label class="block text-sm font-bold text-gray-700">Daftar Rekening Bank</label>
+                                    <button type="button" onclick="addBankField()" class="text-xs bg-blue-50 text-blue-600 font-bold px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors border border-blue-100">
+                                        <i class="fa-solid fa-plus mr-1"></i> Tambah Rekening
+                                    </button>
+                                </div>
+                                <div id="bankList" class="space-y-3">
+                                    <!-- Field bank akan muncul di sini via JS -->
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-gray-100">
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-lg shadow-blue-500/30 flex items-center">
+                                    <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan Pengaturan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- END TAB SETTINGS -->
+
             </div>
         </main>
     </div>
@@ -438,6 +499,132 @@
                 btnElement.innerHTML = originalHTML;
                 btnElement.classList.replace('bg-green-500', 'bg-gray-900');
             }, 2000);
+        }
+
+        // --- SISTEM NAVIGASI TAB & SETTINGS ---
+        
+        function switchTab(tabName) {
+            // Sembunyiin semua tab
+            document.getElementById('tab-dashboard').style.display = 'none';
+            document.getElementById('tab-settings').style.display = 'none';
+            
+            // Reset style menu sidebar
+            document.getElementById('nav-dashboard').className = "flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all";
+            document.getElementById('nav-settings').className = "flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all";
+            
+            // Tampilkan tab yang dipilih
+            if(tabName === 'dashboard') {
+                document.getElementById('tab-dashboard').style.display = 'block';
+                document.getElementById('nav-dashboard').className = "flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all";
+                document.getElementById('headerTitle').innerText = "Dashboard";
+            } else if (tabName === 'settings') {
+                document.getElementById('tab-settings').style.display = 'block';
+                document.getElementById('nav-settings').className = "flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all";
+                document.getElementById('headerTitle').innerText = "Pengaturan Toko";
+                fetchStoreSettings(); // Load data pas tab dibuka
+            }
+        }
+
+        function addBankField(bank = '', rek = '', owner = '') {
+            const container = document.getElementById('bankList');
+            const div = document.createElement('div');
+            div.className = 'flex flex-col sm:flex-row gap-3 items-center bg-gray-50 p-3 rounded-xl border border-gray-200 bank-item';
+            div.innerHTML = `
+                <input type="text" placeholder="Nama Bank (BCA/Mandiri)" value="${bank}" class="bank-name w-full sm:w-1/3 px-4 py-2 border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-sm">
+                <input type="text" placeholder="No. Rekening" value="${rek}" class="bank-rek w-full sm:w-1/3 px-4 py-2 border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-sm">
+                <input type="text" placeholder="Atas Nama" value="${owner}" class="bank-owner w-full sm:w-1/3 px-4 py-2 border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-sm">
+                <button type="button" onclick="this.parentElement.remove()" class="w-full sm:w-auto text-red-500 hover:text-white bg-red-50 hover:bg-red-500 p-2 rounded-lg transition-colors" title="Hapus Rekening">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        async function fetchStoreSettings() {
+            showLoading("Memuat pengaturan...");
+            try {
+                const response = await fetch(API_URL + "?action=getSettings", { method: 'GET', redirect: 'follow' });
+                const result = await response.json();
+                
+                if (result.status === 'success' && result.settings) {
+                    // Buang awalan 62 dari database biar pas di inputan
+                    let waNum = result.settings.waAdmin || "";
+                    if(waNum.startsWith('62')) waNum = waNum.substring(2);
+                    
+                    document.getElementById('setWa').value = waNum;
+                    document.getElementById('setQris').value = result.settings.qrisImage || "";
+                    
+                    const container = document.getElementById('bankList');
+                    container.innerHTML = ''; // bersihkan list lama
+                    
+                    if (result.settings.banks && result.settings.banks.length > 0) {
+                        result.settings.banks.forEach(b => addBankField(b.bank, b.rek, b.owner));
+                    } else {
+                        addBankField(); // Tambah 1 form kosong default
+                    }
+                }
+            } catch (e) {
+                console.error("Gagal memuat setting:", e);
+                showToast("Gagal memuat pengaturan toko", "error");
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function handleSaveSettings(e) {
+            e.preventDefault();
+            showLoading("Menyimpan pengaturan...");
+            
+            // Format ulang WA admin, pastiin ada 62 di depannya
+            let waRaw = document.getElementById('setWa').value.replace(/\D/g,'');
+            if (waRaw.startsWith('0')) waRaw = waRaw.substring(1);
+            const waFinal = waRaw ? "62" + waRaw : "";
+
+            const qris = document.getElementById('setQris').value;
+            
+            // Ambil semua data bank dari inputan dinamis
+            const bankItems = document.querySelectorAll('.bank-item');
+            let banksArr = [];
+            bankItems.forEach(item => {
+                const bName = item.querySelector('.bank-name').value;
+                const bRek = item.querySelector('.bank-rek').value;
+                const bOwner = item.querySelector('.bank-owner').value;
+                if(bName && bRek) {
+                    banksArr.push({ bank: bName, rek: bRek, owner: bOwner });
+                }
+            });
+
+            const payload = {
+                waAdmin: waFinal,
+                qrisImage: qris,
+                banks: banksArr
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    redirect: 'follow', 
+                    body: JSON.stringify({ action: 'saveSettings', payload: payload })
+                });
+                const result = await response.json();
+                
+                if(result.status === 'success') {
+                    showToast("Pengaturan berhasil disimpan!", "success");
+                } else {
+                    showToast("Gagal: " + result.message, "error");
+                }
+            } catch (error) {
+                // Fallback no-cors
+                fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'saveSettings', payload: payload })
+                }).then(() => {
+                    showToast("Pengaturan disimpan (Mode Fallback)!", "success");
+                }).catch(e => showToast("Gagal menyambung ke server.", "error"));
+            } finally {
+                hideLoading();
+            }
         }
 
         // Setup Grafik Dummy
