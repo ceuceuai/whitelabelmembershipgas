@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Halaman akses resmi Whitelabel Membership - source code Google Apps Script, frontend HTML, panduan setup, demo, dan aturan lisensi.">
+  <title>Akses Produk — Whitelabel Membership</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --navy:#0f172a;
+      --navy2:#13244d;
+      --ink:#172033;
+      --muted:#667085;
+      --line:#e7ecf5;
+      --soft:#f7fbff;
+      --white:#fff;
+      --blue:#2563eb;
+      --cyan:#06b6d4;
+      --green:#10b981;
+      --violet:#7c3aed;
+      --orange:#f59e0b;
+      --red:#ef4444;
+      --pink:#d946ef;
+      --radius:24px;
+      --radius-sm:16px;
+      --shadow:0 22px 70px rgba(15,23,42,.10);
+      --shadow-soft:0 10px 30px rgba(15,23,42,.08);
+      --container:980px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family:"Plus Jakarta Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      line-height:1.65;
+      background:
+        radial-gradient(circle at 0% 0%,rgba(16,185,129,.14),transparent 26%),
+        radial-gradient(circle at 100% 0%,rgba(37,99,235,.16),transparent 29%),
+        linear-gradient(180deg,#f5fffb 0%,#f7fbff 28%,#fff 100%);
+      -webkit-font-smoothing:antialiased;
+    }
+
+    img{max-width:100%;display:block}
+    a{text-decoration:none;color:inherit}
+    button,a{-webkit-tap-highlight-color:transparent}
+
+    .container{
+      width:min(var(--container),calc(100% - 34px));
+      margin-inline:auto;
+    }
+
+    .topbar{
+      min-height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-bottom:1px solid rgba(226,232,240,.72);
+      background:rgba(255,255,255,.62);
+      backdrop-filter:blur(14px);
+    }
+
+    .topbar-inner{
+      width:min(var(--container),calc(100% - 34px));
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+
+    .mini-brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .mini-brand img{width:38px;height:38px;object-fit:contain}
+    .mini-brand span{
+      font-family:"Montserrat",sans-serif;
+      font-size:14px;
+    }
+    .top-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#ecfdf5;
+      border:1px solid #a7f3d0;
+      color:#047857;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .hero{
+      padding:70px 0 42px;
+      text-align:center;
+    }
+
+    .hero-logo{
+      width:82px;
+      margin:0 auto 18px;
+      filter:drop-shadow(0 10px 18px rgba(37,99,235,.10));
+    }
+
+    .verified{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:17px;
+      padding:9px 14px;
+      border-radius:999px;
+      border:1px solid #a7f3d0;
+      background:#ecfdf5;
+      color:#047857;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+
+    .hero h1{
+      margin:0;
+      font-family:"Montserrat",sans-serif;
+      font-size:clamp(42px,7vw,68px);
+      line-height:1.04;
+      letter-spacing:-.045em;
+      background:linear-gradient(90deg,#2563eb 0%,#06b6d4 45%,#10b981 100%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    .hero p{
+      max-width:720px;
+      margin:18px auto 0;
+      color:#475467;
+      font-size:16px;
+    }
+
+    .hero p strong{color:var(--navy)}
+
+    .hero-note{
+      margin:20px auto 0;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:9px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:8px 11px;
+      border:1px solid #e2e8f0;
+      border-radius:999px;
+      background:rgba(255,255,255,.82);
+      box-shadow:0 6px 20px rgba(15,23,42,.05);
+      color:#475467;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .product-showcase{
+      margin:12px auto 58px;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns:.9fr 1.1fr;
+      align-items:center;
+      gap:34px;
+      padding:34px;
+      border:1px solid rgba(219,228,241,.92);
+      border-radius:30px;
+      background:rgba(255,255,255,.88);
+      box-shadow:var(--shadow);
+      position:relative;
+    }
+
+    .product-showcase::before{
+      content:"";
+      position:absolute;
+      width:260px;
+      height:260px;
+      border-radius:50%;
+      left:-100px;
+      bottom:-120px;
+      background:rgba(37,99,235,.06);
+    }
+
+    .product-showcase::after{
+      content:"";
+      position:absolute;
+      width:200px;
+      height:200px;
+      border-radius:50%;
+      right:-80px;
+      top:-90px;
+      background:rgba(16,185,129,.08);
+    }
+
+    .product-img{
+      position:relative;
+      z-index:1;
+      max-height:340px;
+      margin:auto;
+      object-fit:contain;
+      filter:drop-shadow(0 24px 32px rgba(15,23,42,.16));
+    }
+
+    .showcase-copy{
+      position:relative;
+      z-index:1;
+      text-align:left;
+    }
+
+    .showcase-copy .eyebrow,
+    .section-title .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 11px;
+      border-radius:999px;
+      background:#eff6ff;
+      border:1px solid #dbeafe;
+      color:#1d4ed8;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .showcase-copy h2{
+      margin:14px 0 10px;
+      font-family:"Montserrat",sans-serif;
+      font-size:clamp(28px,4vw,42px);
+      line-height:1.12;
+      letter-spacing:-.035em;
+      color:var(--navy);
+    }
+
+    .showcase-copy p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .showcase-tags{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-top:22px;
+    }
+
+    .showcase-tag{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 13px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      font-size:12px;
+      font-weight:800;
+      color:#344054;
+    }
+
+    .showcase-tag i{
+      width:29px;height:29px;
+      display:grid;place-items:center;
+      border-radius:9px;
+      font-style:normal;
+      color:white;
+      background:linear-gradient(135deg,var(--blue),var(--cyan));
+    }
+
+    .section{padding:34px 0 58px}
+    .section-title{
+      margin-bottom:22px;
+      text-align:left;
+    }
+
+    .section-title h2{
+      margin:12px 0 7px;
+      font-family:"Montserrat",sans-serif;
+      font-size:clamp(28px,4vw,38px);
+      line-height:1.15;
+      color:var(--navy);
+      letter-spacing:-.03em;
+    }
+
+    .section-title p{
+      max-width:720px;
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .access-list{display:grid;gap:14px}
+
+    .access-card{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      gap:16px;
+      padding:18px 20px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      box-shadow:0 8px 24px rgba(15,23,42,.05);
+      transition:.2s ease;
+    }
+
+    .access-card:hover{
+      transform:translateY(-2px);
+      border-color:#cbd5e1;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .access-icon{
+      width:48px;height:48px;
+      display:grid;place-items:center;
+      border-radius:14px;
+      font-family:"Montserrat",sans-serif;
+      font-size:15px;
+      font-weight:800;
+    }
+
+    .i-blue{background:#eef4ff;color:#3b5bdb}
+    .i-green{background:#ecfdf5;color:#059669}
+    .i-cyan{background:#ecfeff;color:#0891b2}
+    .i-orange{background:#fff7ed;color:#ea580c}
+    .i-violet{background:#f5f3ff;color:#7c3aed}
+    .i-pink{background:#fdf4ff;color:#c026d3}
+
+    .access-info h3{
+      margin:0 0 4px;
+      font-family:"Montserrat",sans-serif;
+      font-size:15px;
+      color:#101828;
+    }
+    .access-info p{
+      margin:0;
+      color:#7a8598;
+      font-size:12px;
+    }
+
+    .btn{
+      min-height:42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:0 16px;
+      border-radius:12px;
+      border:0;
+      font-family:"Plus Jakarta Sans",sans-serif;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.2s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn-blue{color:#1d4ed8;background:#fff;border:1px solid #bfdbfe}
+    .btn-green{color:#047857;background:#fff;border:1px solid #a7f3d0}
+    .btn-cyan{color:#0e7490;background:#fff;border:1px solid #a5f3fc}
+    .btn-orange{color:#fff;background:#f59e0b}
+    .btn-violet{color:#fff;background:#7c3aed}
+    .btn-pink{color:#fff;background:linear-gradient(135deg,#c026d3,#e879f9)}
+    .btn-dark{color:#fff;background:linear-gradient(135deg,#0f172a,#1e3a5f)}
+    .btn-primary{color:#fff;background:linear-gradient(135deg,#2563eb,#06b6d4)}
+
+    .setup-wrap{
+      margin-top:16px;
+      overflow:hidden;
+      border:1px solid #bae6fd;
+      border-radius:24px;
+      background:linear-gradient(180deg,#f0fbff 0%,#effcff 100%);
+    }
+
+    .setup-head{
+      padding:26px 28px 4px;
+    }
+
+    .setup-head small{
+      display:block;
+      color:#0891b2;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .setup-head h3{
+      margin:7px 0 7px;
+      font-family:"Montserrat",sans-serif;
+      font-size:24px;
+      color:var(--navy);
+    }
+
+    .setup-head p{
+      margin:0;
+      color:#5d7280;
+      font-size:13px;
+    }
+
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:12px;
+      padding:22px 28px 28px;
+    }
+
+    .step{
+      position:relative;
+      padding:18px 14px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid #d9f3fb;
+    }
+
+    .step b{
+      width:30px;height:30px;
+      display:grid;place-items:center;
+      margin-bottom:10px;
+      border-radius:10px;
+      color:#0e7490;
+      background:#ecfeff;
+      font-family:"Montserrat",sans-serif;
+      font-size:12px;
+    }
+
+    .step strong{
+      display:block;
+      margin-bottom:5px;
+      font-size:12px;
+      color:#102a43;
+    }
+    .step span{
+      display:block;
+      color:#718096;
+      font-size:11px;
+      line-height:1.55;
+    }
+
+    .critical{
+      margin-top:28px;
+      overflow:hidden;
+      border:1px solid #fecaca;
+      border-radius:24px;
+      background:#fff7f7;
+    }
+
+    .critical-head{
+      padding:24px 28px 8px;
+    }
+
+    .critical-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      color:#dc2626;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .critical h3{
+      margin:8px 0 9px;
+      font-family:"Montserrat",sans-serif;
+      font-size:25px;
+      color:#450a0a;
+    }
+
+    .critical p{
+      margin:0;
+      color:#7f1d1d;
+      font-size:13px;
+    }
+
+    .codebox{
+      margin:16px 28px 0;
+      padding:15px 16px;
+      border:1px solid #fecaca;
+      border-radius:13px;
+      background:#fff;
+      color:#dc2626;
+      font-family:Consolas,Monaco,monospace;
+      font-size:12px;
+      overflow:auto;
+    }
+
+    .critical-list{
+      display:grid;
+      gap:10px;
+      padding:20px 28px 28px;
+    }
+
+    .critical-item{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      color:#7f1d1d;
+      font-size:12px;
+    }
+
+    .critical-item b{
+      color:#991b1b;
+    }
+
+    .rules{
+      margin-top:28px;
+      overflow:hidden;
+      border:1px solid #c7d2fe;
+      border-radius:24px;
+      background:#f7f8ff;
+    }
+
+    .rules-inner{padding:27px 28px}
+    .rules-kicker{
+      color:#4f46e5;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .rules h3{
+      margin:8px 0 18px;
+      font-family:"Montserrat",sans-serif;
+      font-size:25px;
+      color:#1e1b4b;
+    }
+
+    .rule-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px 18px;
+    }
+
+    .rule{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      color:#3f3f63;
+      font-size:12px;
+    }
+
+    .rule-mark{
+      width:20px;height:20px;
+      flex:0 0 20px;
+      display:grid;place-items:center;
+      margin-top:1px;
+      border-radius:50%;
+      font-size:11px;
+      font-weight:900;
+    }
+
+    .ok{background:#ecfdf5;color:#059669}
+    .no{background:#fef2f2;color:#dc2626}
+
+    .rebrand{
+      margin-top:28px;
+      padding:28px;
+      border:1px solid #fed7aa;
+      border-radius:24px;
+      background:#fffaf5;
+    }
+
+    .rebrand h3{
+      margin:0 0 8px;
+      font-family:"Montserrat",sans-serif;
+      font-size:24px;
+      color:#7c2d12;
+    }
+
+    .rebrand > p{
+      margin:0 0 18px;
+      color:#9a5a38;
+      font-size:13px;
+    }
+
+    .check-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+
+    .check{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:12px 13px;
+      border-radius:13px;
+      background:white;
+      border:1px solid #ffedd5;
+      color:#7c4a34;
+      font-size:12px;
+    }
+    .check i{
+      width:20px;height:20px;
+      display:grid;place-items:center;
+      flex:0 0 20px;
+      border-radius:50%;
+      background:#ecfdf5;
+      color:#059669;
+      font-style:normal;
+      font-weight:900;
+    }
+
+    .no-support{
+      margin:28px 0 62px;
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      align-items:center;
+      gap:28px;
+      padding:32px;
+      border-radius:28px;
+      color:white;
+      background:
+        radial-gradient(circle at 90% 10%,rgba(255,255,255,.12),transparent 30%),
+        linear-gradient(120deg,#0f172a 0%,#16376a 58%,#0f766e 100%);
+      box-shadow:0 24px 70px rgba(15,23,42,.18);
+    }
+
+    .no-support .label{
+      display:inline-block;
+      margin-bottom:8px;
+      color:#99f6e4;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .no-support h3{
+      margin:0 0 8px;
+      font-family:"Montserrat",sans-serif;
+      font-size:28px;
+      line-height:1.15;
+    }
+
+    .no-support p{
+      margin:0;
+      color:#cfdef3;
+      font-size:13px;
+    }
+
+    .self-help{
+      display:grid;
+      gap:9px;
+    }
+
+    .self-help div{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:11px 12px;
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:12px;
+      background:rgba(255,255,255,.06);
+      color:#e6f0ff;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    footer{
+      padding:30px 0;
+      border-top:1px solid #e8edf5;
+      background:#fff;
+    }
+
+    .footer-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:22px;
+    }
+
+    .footer-brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .footer-brand img{width:38px;height:38px;object-fit:contain}
+    .footer-brand strong{
+      font-family:"Montserrat",sans-serif;
+      color:var(--navy);
+      font-size:13px;
+    }
+
+    .footer-note{
+      text-align:right;
+      color:#98a2b3;
+      font-size:11px;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:24px;
+      z-index:99;
+      transform:translate(-50%,20px);
+      opacity:0;
+      pointer-events:none;
+      padding:12px 16px;
+      border-radius:13px;
+      background:#0f172a;
+      color:#fff;
+      box-shadow:0 14px 38px rgba(15,23,42,.24);
+      font-size:12px;
+      font-weight:700;
+      transition:.22s ease;
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+
+    @media(max-width:900px){
+      .product-showcase{grid-template-columns:1fr;text-align:center}
+      .showcase-copy{text-align:center}
+      .showcase-copy p{max-width:660px;margin-inline:auto}
+      .steps{grid-template-columns:1fr 1fr}
+      .no-support{grid-template-columns:1fr}
+      .rule-list{grid-template-columns:1fr}
+    }
+
+    @media(max-width:650px){
+      .topbar-inner{justify-content:center}
+      .top-badge{display:none}
+      .hero{padding-top:52px}
+      .hero p{font-size:14px}
+      .product-showcase{padding:24px 18px;border-radius:24px}
+      .showcase-tags{grid-template-columns:1fr}
+      .access-card{grid-template-columns:auto 1fr}
+      .access-card .btn{grid-column:1/-1;width:100%}
+      .steps{grid-template-columns:1fr;padding:18px}
+      .setup-head{padding:22px 18px 4px}
+      .critical-head{padding:22px 18px 8px}
+      .codebox{margin:14px 18px 0}
+      .critical-list{padding:18px}
+      .rules-inner{padding:22px 18px}
+      .rebrand{padding:22px 18px}
+      .check-grid{grid-template-columns:1fr}
+      .no-support{padding:26px 20px}
+      .footer-inner{flex-direction:column;align-items:flex-start}
+      .footer-note{text-align:left}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a class="mini-brand" href="#top">
+        <img src="https://imersnesia.com/wp-content/uploads/2026/08/icon-whitelabel-membership.png" alt="Whitelabel Membership">
+        <span>Whitelabel Membership</span>
+      </a>
+      <div class="top-badge">✓ Verified Purchase Access</div>
+    </div>
+  </div>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container">
+        <img class="hero-logo" src="https://imersnesia.com/wp-content/uploads/2026/08/icon-whitelabel-membership.png" alt="Logo Whitelabel Membership">
+        <div class="verified">✓ Akses Pembelian Terverifikasi</div>
+        <h1>Terima Kasih!</h1>
+        <p>
+          Selamat, Anda sudah mendapatkan akses ke <strong>Whitelabel Membership</strong>.
+          Di halaman ini Anda bisa mengambil source code, frontend HTML, template Google Sheets, panduan setup, demo, dan aturan lisensi produk.
+        </p>
+
+        <div class="hero-note">
+          <span class="pill">✓ Source Code Editable</span>
+          <span class="pill">✓ Wajib Rebrand Sebelum Resale</span>
+          <span class="pill">✓ Berbasis Google Apps Script</span>
+          <span class="pill">✓ No Refund</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <section class="product-showcase">
+        <div>
+          <img class="product-img" src="https://imersnesia.com/wp-content/uploads/2026/08/box-whitelabellisence.png" alt="Box Whitelabel Membership">
+        </div>
+        <div class="showcase-copy">
+          <span class="eyebrow">Pusat Akses Produk</span>
+          <h2>Semua yang Anda Butuhkan Ada di Satu Halaman</h2>
+          <p>
+            Simpan halaman ini. Gunakan sebagai pusat akses untuk download file, menyalin template, membaca panduan instalasi, dan memahami rules sebelum Anda mulai melakukan rebrand.
+          </p>
+          <div class="showcase-tags">
+            <div class="showcase-tag"><i>GS</i> Google Apps Script</div>
+            <div class="showcase-tag"><i>H</i> Frontend HTML</div>
+            <div class="showcase-tag"><i>DB</i> Google Sheets</div>
+            <div class="showcase-tag"><i>R</i> License &amp; Rules</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="akses">
+        <div class="section-title">
+          <span class="eyebrow">Akses File Produk</span>
+          <h2>Ambil File &amp; Resource Anda</h2>
+          <p>Ganti setiap URL placeholder di bawah dengan link Google Drive, Google Sheets, video, demo, atau halaman dokumentasi Anda sendiri.</p>
+        </div>
+
+        <div class="access-list">
+          <article class="access-card">
+            <div class="access-icon i-green">GS</div>
+            <div class="access-info">
+              <h3>Template Google Sheets + Apps Script</h3>
+              <p>Database utama dan backend Google Apps Script. Buat salinan ke akun Google Anda sendiri.</p>
+            </div>
+            <a class="btn btn-green placeholder-link" href="#" data-label="Template Google Sheets">Salin File</a>
+          </article>
+
+          <article class="access-card">
+            <div class="access-icon i-cyan">&lt;/&gt;</div>
+            <div class="access-info">
+              <h3>Frontend HTML — Paket Lengkap</h3>
+              <p>File HTML frontend yang dapat di-hosting, direbrand, dan dimodifikasi sesuai kebutuhan.</p>
+            </div>
+            <a class="btn btn-cyan placeholder-link" href="#" data-label="Frontend HTML">Download</a>
+          </article>
+
+          <article class="access-card">
+            <div class="access-icon i-blue">DEMO</div>
+            <div class="access-info">
+              <h3>Demo Admin &amp; Alur Sistem</h3>
+              <p>Wajib dicoba agar Anda memahami menu, produk, checkout, pembayaran manual, dan alur member.</p>
+            </div>
+            <a class="btn btn-blue placeholder-link" href="#" data-label="Demo Admin">Buka Demo</a>
+          </article>
+
+          <article class="access-card">
+            <div class="access-icon i-orange">▶</div>
+            <div class="access-info">
+              <h3>Tutorial Setup Lengkap</h3>
+              <p>Panduan instalasi dari copy Google Sheets, deploy Apps Script, sampai menghubungkan frontend.</p>
+            </div>
+            <a class="btn btn-orange placeholder-link" href="#" data-label="Tutorial Setup">Tonton Video</a>
+          </article>
+
+          <article class="access-card">
+            <div class="access-icon i-violet">DOC</div>
+            <div class="access-info">
+              <h3>Panduan Rebrand &amp; Modifikasi</h3>
+              <p>Checklist elemen yang wajib diganti sebelum produk Anda dijual kembali.</p>
+            </div>
+            <a class="btn btn-violet" href="#rebrand">Baca Panduan</a>
+          </article>
+
+          <article class="access-card">
+            <div class="access-icon i-pink">LIC</div>
+            <div class="access-info">
+              <h3>Aturan Lisensi Whitelabel</h3>
+              <p>Hak modifikasi, resale, larangan distribusi mentah, no refund, dan ketentuan support customer.</p>
+            </div>
+            <a class="btn btn-pink" href="#rules">Baca Rules</a>
+          </article>
+        </div>
+
+        <div class="setup-wrap">
+          <div class="setup-head">
+            <small>Panduan Cepat</small>
+            <h3>Urutan Setup yang Direkomendasikan</h3>
+            <p>Ikuti alur ini agar frontend berhasil terhubung dengan backend Google Apps Script Anda sendiri.</p>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <b>01</b>
+              <strong>Salin Google Sheets</strong>
+              <span>Buat copy template database ke akun Google Anda.</span>
+            </div>
+            <div class="step">
+              <b>02</b>
+              <strong>Cek Apps Script</strong>
+              <span>Buka Extensions → Apps Script dan pahami file <code>code.gs</code>.</span>
+            </div>
+            <div class="step">
+              <b>03</b>
+              <strong>Deploy Web App</strong>
+              <span>Deploy sebagai Web App dan simpan URL deployment Anda.</span>
+            </div>
+            <div class="step">
+              <b>04</b>
+              <strong>Pasang SCRIPT_URL</strong>
+              <span>Ganti URL backend di seluruh file HTML yang membutuhkan koneksi.</span>
+            </div>
+            <div class="step">
+              <b>05</b>
+              <strong>Hosting &amp; Tes</strong>
+              <span>Upload frontend, lalu tes login, produk, checkout, email, dan pembayaran.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="critical">
+          <div class="critical-head">
+            <span class="critical-kicker">⚠ Catatan Super Penting</span>
+            <h3>Wajib Ubah URL Web App Google Apps Script di Frontend!</h3>
+            <p>
+              Frontend tidak akan bekerja dengan database Anda sendiri sebelum URL Web App Apps Script diganti dengan URL deployment milik Anda.
+            </p>
+          </div>
+
+          <div class="codebox">const SCRIPT_URL = 'MASUKKAN_URL_WEB_APP_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI';</div>
+
+          <div class="critical-list">
+            <div class="critical-item">⚠ <span>Cari variabel seperti <b>SCRIPT_URL</b>, <b>API_URL</b>, atau endpoint Apps Script pada file HTML yang terhubung ke backend.</span></div>
+            <div class="critical-item">⚠ <span>Pastikan URL berasal dari deployment Web App milik akun Google Anda sendiri.</span></div>
+            <div class="critical-item">⚠ <span>Setelah mengganti URL, tes kembali login, pengambilan produk, transaksi, checkout, dan fungsi notifikasi.</span></div>
+          </div>
+        </div>
+
+        <div class="rules" id="rules">
+          <div class="rules-inner">
+            <span class="rules-kicker">Aturan Lisensi Whitelabel</span>
+            <h3>Wajib Dipahami Sebelum Anda Mulai Menjual Ulang</h3>
+
+            <div class="rule-list">
+              <div class="rule">
+                <span class="rule-mark ok">✓</span>
+                <span><strong>Wajib Rebrand:</strong> ganti nama produk, logo, warna, copy, identitas, dan elemen brand sebelum dijual kembali.</span>
+              </div>
+              <div class="rule">
+                <span class="rule-mark ok">✓</span>
+                <span><strong>Bebas Modifikasi:</strong> Anda boleh mengedit <code>code.gs</code>, frontend HTML, desain, workflow, dan fitur.</span>
+              </div>
+              <div class="rule">
+                <span class="rule-mark ok">✓</span>
+                <span><strong>Boleh Jual Kembali:</strong> versi yang sudah direbrand dapat Anda pasarkan dengan model lisensi Anda sendiri.</span>
+              </div>
+              <div class="rule">
+                <span class="rule-mark ok">✓</span>
+                <span><strong>Value Ada di Pengembangan Anda:</strong> semakin baik modifikasi, dokumentasi, dan UX, semakin tinggi potensi nilai jual.</span>
+              </div>
+              <div class="rule">
+                <span class="rule-mark no">×</span>
+                <span><strong>Dilarang Menjual Mentah:</strong> jangan menjual source menggunakan identitas Whitelabel Membership tanpa rebrand.</span>
+              </div>
+              <div class="rule">
+                <span class="rule-mark no">×</span>
+                <span><strong>Dilarang Dibagikan Gratis:</strong> jangan menyebarkan source sebagai giveaway, lead magnet, atau akses publik gratis.</span>
+              </div>
+              <div class="rule">
+                <span class="rule-mark no">×</span>
+                <span><strong>No Refund:</strong> source code digital yang sudah diterima tidak dapat dikembalikan atau direfund.</span>
+              </div>
+              <div class="rule">
+                <span class="rule-mark no">×</span>
+                <span><strong>Tidak Ada Grup Support untuk Customer Resale:</strong> pembeli Anda adalah tanggung jawab support Anda sendiri.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rebrand" id="rebrand">
+          <h3>Checklist Sebelum Produk Anda Dijual Kembali</h3>
+          <p>Jangan hanya mengganti logo. Jadikan produk benar-benar terasa sebagai produk milik brand Anda.</p>
+
+          <div class="check-grid">
+            <div class="check"><i>✓</i><span>Ganti nama produk dan seluruh logo/identitas.</span></div>
+            <div class="check"><i>✓</i><span>Ubah warna, tipografi, layout, dan gaya visual.</span></div>
+            <div class="check"><i>✓</i><span>Periksa copywriting login, dashboard, checkout, dan email.</span></div>
+            <div class="check"><i>✓</i><span>Masukkan rekening bank dan QRIS statis milik Anda.</span></div>
+            <div class="check"><i>✓</i><span>Hubungkan Gmail/Google Account untuk notifikasi MailApp.</span></div>
+            <div class="check"><i>✓</i><span>Ganti semua URL Apps Script dengan deployment Anda.</span></div>
+            <div class="check"><i>✓</i><span>Tes seluruh alur dari login sampai konfirmasi transaksi.</span></div>
+            <div class="check"><i>✓</i><span>Siapkan dokumentasi dan support untuk customer Anda sendiri.</span></div>
+          </div>
+        </div>
+
+        <div class="no-support">
+          <div>
+            <span class="label">Self-Managed Product</span>
+            <h3>Customer Resale Anda Tidak Mendapat Grup Support dari Kami.</h3>
+            <p>
+              Source ini diberikan agar Anda bisa membangun produk versi Anda sendiri. Jika Anda menjual ulang, proses onboarding, tutorial, troubleshooting, dan komunikasi customer menjadi tanggung jawab Anda sebagai penjual.
+            </p>
+          </div>
+          <div class="self-help">
+            <div>✓ Pelajari tutorial setup terlebih dahulu</div>
+            <div>✓ Simpan backup source sebelum modifikasi</div>
+            <div>✓ Dokumentasikan perubahan versi Anda</div>
+            <div>✓ Tes sendiri sebelum dijual ke customer</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="https://imersnesia.com/wp-content/uploads/2026/08/icon-whitelabel-membership.png" alt="Whitelabel Membership">
+        <strong>Whitelabel Membership</strong>
+      </div>
+      <div class="footer-note">
+        Rebrand • Modifikasi • Tingkatkan Value • Jual dengan Brand Anda
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast">URL akses belum dipasang.</div>
+
+  <script>
+    // =========================================================
+    // PENTING:
+    // Ganti href="#" pada tombol yang masih placeholder
+    // dengan URL Google Drive, Google Sheets, Demo Admin,
+    // YouTube/Vimeo, atau resource Anda.
+    // =========================================================
+
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    document.querySelectorAll('.placeholder-link').forEach(link => {
+      link.addEventListener('click', function(e){
+        if(this.getAttribute('href') === '#'){
+          e.preventDefault();
+          const label = this.dataset.label || 'Resource';
+          toast.textContent = label + ' belum diberi URL. Silakan edit href pada file HTML.';
+          toast.classList.add('show');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
