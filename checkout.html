@@ -53,14 +53,14 @@
     <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-gray-100">
         <!-- Header -->
         <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white relative">
-            <div class="w-16 h-16 bg-white/20 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 backdrop-blur-sm shadow-inner">
+            <div id="checkoutBrandLogo" class="w-16 h-16 bg-white/20 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 backdrop-blur-sm shadow-inner overflow-hidden">
                 <i class="fa-solid fa-cart-shopping"></i>
             </div>
-            <h1 class="text-2xl font-bold mb-2">Selesaikan Pesanan</h1>
+            <h1 id="checkoutBrandName" class="text-2xl font-bold mb-2">Selesaikan Pesanan</h1>
             <p class="text-blue-100 text-sm">Akses instan ke produk digital Anda setelah pembayaran dikonfirmasi.</p>
             
             <!-- Affiliate Badge -->
-            <div id="affBadge" style="display: none;" class="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm border border-white/30">
+            <div id="affBadge" style="display: none;" class="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm border border-white/30 shadow-sm">
                 <i class="fa-solid fa-handshake mr-1"></i> Referred
             </div>
         </div>
@@ -101,7 +101,7 @@
 
                 <!-- Submit Button -->
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-blue-500/30 text-lg flex justify-center items-center">
-                    <i class="fa-solid fa-lock mr-2"></i> Buat Pesanan
+                    <i class="fa-solid fa-lock mr-2"></i> Bayar Sekarang
                 </button>
             </form>
             
@@ -124,7 +124,7 @@
                             <i class="fa-solid fa-building-columns text-blue-500 mr-2"></i> Pilihan Rekening Bank
                         </div>
                         <div class="p-4 space-y-3 bg-white" id="bankListContainer">
-                            <!-- Diisi otomatis dari Database Settings Sheets -->
+                            <!-- Diisi otomatis dari Javascript -->
                         </div>
                     </div>
 
@@ -133,7 +133,7 @@
                             <i class="fa-solid fa-qrcode text-blue-500 mr-2"></i> QRIS Statis (Scan Semua E-Wallet)
                         </div>
                         <div class="p-6 bg-white flex flex-col items-center">
-                            <img id="qrisImage" src="" alt="QRIS" class="max-w-[200px] rounded-lg shadow-sm border border-gray-100 mb-3">
+                            <img id="qrisImage" src="" alt="QRIS" class="max-w-[200px] rounded-lg shadow-sm border border-gray-100 mb-3" onerror="this.style.display='none'">
                             <p class="text-xs text-gray-500 text-center mt-2">Scan pakai BCA, Mandiri, GoPay, OVO, Dana, dll.</p>
                         </div>
                     </div>
@@ -152,9 +152,12 @@
     </div>
 
     <script>
+        // MASUKIN URL WEB APP GAS LO DI SINI
         const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec";
 
         let storeSettings = {
+            storeName: "Whitelabel Membership",
+            storeLogo: "",
             waAdmin: "6281234567890",
             qrisImage: "",
             banks: []
@@ -167,8 +170,9 @@
             setTimeout(() => { toast.classList.remove('show'); }, 4000);
         }
 
-        // Ambil konfigurasi toko dari Google Sheets secara dinamis pas halaman dibuka
+        // Ambil konfigurasi toko dari Google Sheets pas halaman dibuka
         window.addEventListener('DOMContentLoaded', async () => {
+            // Nangkep Affiliate Link
             const urlParams = new URLSearchParams(window.location.search);
             const affCode = urlParams.get('aff');
             
@@ -184,20 +188,30 @@
                 });
                 const textResponse = await response.text();
                 
-                // Cek apakah response berupa HTML (mengatasi error <!DOCTYPE HTML> saat redirect/error)
-                if (textResponse.trim().startsWith('<')) {
-                    throw new Error("Received HTML instead of JSON. Check Google Apps Script deployment permissions.");
-                }
-                
-                const result = JSON.parse(textResponse);
-                if (result.status === 'success' && result.settings) {
-                    storeSettings = result.settings;
+                if (!textResponse.trim().startsWith('<')) {
+                    const result = JSON.parse(textResponse);
+                    if (result.status === 'success' && result.settings) {
+                        storeSettings = result.settings;
+                        
+                        // Update UI Brand secara dinamis
+                        if(storeSettings.storeName) {
+                            document.title = `Checkout | ${storeSettings.storeName}`;
+                            document.getElementById('checkoutBrandName').innerText = `Pesanan ${storeSettings.storeName}`;
+                        }
+                        
+                        if(storeSettings.storeLogo && storeSettings.storeLogo.startsWith('http')) {
+                            document.getElementById('checkoutBrandLogo').innerHTML = `<img src="${storeSettings.storeLogo}" class="w-full h-full object-cover" alt="Logo">`;
+                            document.getElementById('checkoutBrandLogo').classList.remove('bg-white/20', 'p-4');
+                        }
+                    }
                 }
             } catch (e) {
-                console.warn("Gagal memuat pengaturan toko secara dinamis, menggunakan nilai default:", e);
+                console.warn("Gagal memuat pengaturan toko dinamis, pakai default:", e);
             } finally {
-                document.getElementById('loadingOverlay').style.opacity = '0';
-                setTimeout(() => { document.getElementById('loadingOverlay').style.display = 'none'; }, 300);
+                // Matiin loading apapun yang terjadi
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.opacity = '0';
+                setTimeout(() => { overlay.style.display = 'none'; }, 300);
             }
         });
 
@@ -205,6 +219,7 @@
             e.preventDefault();
             
             const overlay = document.getElementById('loadingOverlay');
+            overlay.querySelector('p').innerText = "Memproses pesanan...";
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 10);
 
@@ -231,14 +246,17 @@
                 });
                 
                 const textResponse = await response.text();
-                if (textResponse.trim().startsWith('<')) {
-                    throw new Error("Received HTML response instead of JSON");
-                }
-                const result = JSON.parse(textResponse);
                 
+                // Tutup loading screen
                 overlay.style.opacity = '0';
                 setTimeout(() => { overlay.style.display = 'none'; }, 300);
 
+                if (textResponse.trim().startsWith('<')) {
+                    throw new Error("Received HTML error / Redirect from Google");
+                }
+                
+                const result = JSON.parse(textResponse);
+                
                 if (result.status === 'success') {
                     document.getElementById('checkoutForm').style.display = 'none';
                     tampilkanInstruksiPembayaran(productPrice);
@@ -248,7 +266,7 @@
                 }
                 
             } catch (error) {
-                // Fallback untuk penanganan network / mode no-cors
+                // Fallback Mode CORS Ketat Vercel
                 fetch(API_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -263,19 +281,20 @@
                 }).catch(e => {
                     overlay.style.opacity = '0';
                     setTimeout(() => { overlay.style.display = 'none'; }, 300);
-                    showToast("Gagal menyambung ke server.", "error");
+                    showToast("Gagal menyambung ke server database.", "error");
                 });
             }
         }
 
         function tampilkanInstruksiPembayaran(nominal) {
+            // Format Rupiah
             const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
             document.getElementById('paymentAmount').innerText = formatter.format(nominal);
             
+            // Generate Rekening Dinamis dari Database
             const bankContainer = document.getElementById('bankListContainer');
             bankContainer.innerHTML = '';
             
-            // Loop data rekening yang diambil dinamis dari Google Sheets
             if (storeSettings.banks && storeSettings.banks.length > 0) {
                 storeSettings.banks.forEach(b => {
                     bankContainer.innerHTML += `
@@ -291,10 +310,16 @@
                     `;
                 });
             } else {
-                bankContainer.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">Belum ada rekening diatur.</p>`;
+                bankContainer.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">Belum ada rekening yang diatur admin.</p>`;
             }
 
-            document.getElementById('qrisImage').src = storeSettings.qrisImage || "";
+            // Tampilkan QRIS kalau ada URL-nya
+            if(storeSettings.qrisImage && storeSettings.qrisImage.startsWith('http')) {
+                document.getElementById('qrisImage').src = storeSettings.qrisImage;
+            } else {
+                document.getElementById('qrisImage').parentElement.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">QRIS tidak tersedia.</p>`;
+            }
+
             document.getElementById('paymentScreen').style.display = 'block';
         }
 
@@ -310,8 +335,9 @@
 
         function confirmPaymentWA() {
             const email = document.getElementById('customerEmail').value;
+            const waNumber = storeSettings.waAdmin || "6281234567890";
             const text = `Halo Admin, saya mau konfirmasi pembayaran Whitelabel.\n\nEmail Pemesan: ${email}\nStatus: Sudah Transfer (Mohon dicek mutasinya)`;
-            window.open(`https://wa.me/${storeSettings.waAdmin}?text=${encodeURIComponent(text)}`, '_blank');
+            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
 </body>
