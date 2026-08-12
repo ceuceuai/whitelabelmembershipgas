@@ -13,10 +13,7 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        bglight: '#f8f9fc',
-                        brandblue: '#3b82f6',
-                    }
+                    colors: { bglight: '#f8f9fc', brandblue: '#3b82f6' }
                 }
             }
         }
@@ -45,9 +42,9 @@
 <body class="bg-bglight text-gray-800 font-sans min-h-screen flex items-center justify-center p-4">
 
     <!-- Global Loading -->
-    <div id="loadingOverlay" style="display: none; opacity: 0;">
+    <div id="loadingOverlay">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-500 mb-3"></i>
-        <p class="text-sm font-medium text-gray-600">Memproses pesanan Anda...</p>
+        <p class="text-sm font-medium text-gray-600">Memuat informasi toko...</p>
     </div>
 
     <!-- Toast Notification -->
@@ -60,9 +57,9 @@
                 <i class="fa-solid fa-cart-shopping"></i>
             </div>
             <h1 class="text-2xl font-bold mb-2">Selesaikan Pesanan</h1>
-            <p class="text-blue-100 text-sm">Akses instan ke produk digital Anda setelah pembayaran.</p>
+            <p class="text-blue-100 text-sm">Akses instan ke produk digital Anda setelah pembayaran dikonfirmasi.</p>
             
-            <!-- Affiliate Badge (Hidden by default) -->
+            <!-- Affiliate Badge -->
             <div id="affBadge" style="display: none;" class="absolute top-4 right-4 bg-white/20 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm border border-white/30">
                 <i class="fa-solid fa-handshake mr-1"></i> Referred
             </div>
@@ -75,7 +72,6 @@
                 <div class="mb-6">
                     <label class="block text-sm font-bold text-gray-700 mb-3">Pilih Produk</label>
                     <div class="space-y-3">
-                        <!-- Product 1 -->
                         <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all">
                             <div class="flex items-center">
                                 <input type="radio" name="product" value="Bundle Template Promosi|150000" class="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300" required>
@@ -84,7 +80,6 @@
                             <span class="font-bold text-blue-600">Rp 150.000</span>
                         </label>
                         
-                        <!-- Product 2 -->
                         <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all">
                             <div class="flex items-center">
                                 <input type="radio" name="product" value="Masterclass Affiliate|350000" class="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300">
@@ -102,12 +97,11 @@
                     <p class="text-xs text-gray-500 mt-2"><i class="fa-solid fa-shield-halved mr-1"></i> Produk akan dikirimkan ke email ini.</p>
                 </div>
 
-                <!-- Hidden Input for Affiliate Code -->
                 <input type="hidden" id="affiliateCode" value="">
 
                 <!-- Submit Button -->
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-blue-500/30 text-lg flex justify-center items-center">
-                    <i class="fa-solid fa-lock mr-2"></i> Bayar Sekarang
+                    <i class="fa-solid fa-lock mr-2"></i> Buat Pesanan
                 </button>
             </form>
             
@@ -117,45 +111,40 @@
                     <i class="fa-solid fa-wallet"></i>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">Menunggu Pembayaran</h2>
-                <p class="text-gray-600 mb-6 text-center text-sm">Silakan selesaikan pembayaran sesuai nominal ke salah satu opsi di bawah ini.</p>
+                <p class="text-gray-600 mb-6 text-center text-sm">Silakan transfer sesuai nominal tagihan ke salah satu rekening di bawah ini:</p>
                 
-                <!-- Nominal Tagihan -->
                 <div class="bg-blue-50 rounded-xl p-4 mb-6 text-center border border-blue-100 shadow-sm">
                     <p class="text-sm text-gray-600 mb-1">Total Tagihan:</p>
                     <h3 class="text-3xl font-bold text-blue-700" id="paymentAmount">Rp 0</h3>
                 </div>
 
-                <!-- Opsi Pembayaran -->
                 <div class="space-y-4 text-left">
-                    <!-- Transfer Bank -->
                     <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                         <div class="bg-gray-50 px-4 py-3 font-bold text-gray-700 border-b border-gray-200 flex items-center">
-                            <i class="fa-solid fa-building-columns text-blue-500 mr-2"></i> Transfer Bank
+                            <i class="fa-solid fa-building-columns text-blue-500 mr-2"></i> Pilihan Rekening Bank
                         </div>
                         <div class="p-4 space-y-3 bg-white" id="bankListContainer">
-                            <!-- Diisi otomatis lewat Javascript -->
+                            <!-- Diisi otomatis dari Database Settings Sheets -->
                         </div>
                     </div>
 
-                    <!-- QRIS -->
                     <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                         <div class="bg-gray-50 px-4 py-3 font-bold text-gray-700 border-b border-gray-200 flex items-center">
-                            <i class="fa-solid fa-qrcode text-blue-500 mr-2"></i> QRIS Statis
+                            <i class="fa-solid fa-qrcode text-blue-500 mr-2"></i> QRIS Statis (Scan Semua E-Wallet)
                         </div>
                         <div class="p-6 bg-white flex flex-col items-center">
                             <img id="qrisImage" src="" alt="QRIS" class="max-w-[200px] rounded-lg shadow-sm border border-gray-100 mb-3">
-                            <p class="text-xs text-gray-500 text-center">Scan QR code di atas menggunakan m-banking atau e-wallet (OVO, Gopay, Dana, LinkAja).</p>
+                            <p class="text-xs text-gray-500 text-center mt-2">Scan pakai BCA, Mandiri, GoPay, OVO, Dana, dll.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Konfirmasi -->
                 <div class="mt-8 space-y-3">
                     <button onclick="confirmPaymentWA()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-green-500/30 flex justify-center items-center text-lg">
-                        <i class="fa-brands fa-whatsapp mr-2 text-xl"></i> Konfirmasi ke Admin
+                        <i class="fa-brands fa-whatsapp mr-2 text-xl"></i> Konfirmasi Pembayaran via WA
                     </button>
                     <button onclick="window.location.reload()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 rounded-xl transition-colors">
-                        Kembali Selesai
+                        Batal / Kembali
                     </button>
                 </div>
             </div>
@@ -163,21 +152,14 @@
     </div>
 
     <script>
-        // MASUKIN URL WEB APP GAS LU DI SINI!! SAMA KAYAK YANG DI INDEX.HTML
         const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec";
 
-        // KONFIGURASI PEMBAYARAN LU DI SINI BRO!
-        const paymentConfig = {
-            waAdmin: "6281234567890", // Nomor WA konfirmasi (pakai 62 depannya)
-            qrisImage: "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=DUMMY_QRIS_GANTI_PAKE_LINK_GAMBAR_ASLI", // Link gambar QRIS lo
-            banks: [
-                { bank: "BCA", rek: "1234567890", owner: "PT Whitelabel Indo" },
-                { bank: "Bank Mandiri", rek: "0987654321", owner: "PT Whitelabel Indo" },
-                { bank: "BSI", rek: "1122334455", owner: "PT Whitelabel Indo" }
-            ]
+        let storeSettings = {
+            waAdmin: "6281234567890",
+            qrisImage: "",
+            banks: []
         };
 
-        // Toast Notification Helper
         function showToast(message, type) {
             const toast = document.getElementById('toast');
             toast.innerText = message;
@@ -185,33 +167,51 @@
             setTimeout(() => { toast.classList.remove('show'); }, 4000);
         }
 
-        // Tangkap parameter 'aff' dari URL (Misal: checkout.html?aff=WM-ADMIN99)
-        window.addEventListener('DOMContentLoaded', () => {
+        // Ambil konfigurasi toko dari Google Sheets secara dinamis pas halaman dibuka
+        window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const affCode = urlParams.get('aff');
             
             if (affCode) {
                 document.getElementById('affiliateCode').value = affCode;
-                document.getElementById('affBadge').style.display = 'block'; // Tampilkan badge kalau dia pakai link aff
-                console.log("Tracked Affiliate:", affCode);
+                document.getElementById('affBadge').style.display = 'block';
+            }
+
+            try {
+                const response = await fetch(API_URL + "?action=getSettings", {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                const textResponse = await response.text();
+                
+                // Cek apakah response berupa HTML (mengatasi error <!DOCTYPE HTML> saat redirect/error)
+                if (textResponse.trim().startsWith('<')) {
+                    throw new Error("Received HTML instead of JSON. Check Google Apps Script deployment permissions.");
+                }
+                
+                const result = JSON.parse(textResponse);
+                if (result.status === 'success' && result.settings) {
+                    storeSettings = result.settings;
+                }
+            } catch (e) {
+                console.warn("Gagal memuat pengaturan toko secara dinamis, menggunakan nilai default:", e);
+            } finally {
+                document.getElementById('loadingOverlay').style.opacity = '0';
+                setTimeout(() => { document.getElementById('loadingOverlay').style.display = 'none'; }, 300);
             }
         });
 
-        // Proses Submit Form Checkout
         async function processCheckout(e) {
             e.preventDefault();
             
-            // Tampilkan loading
             const overlay = document.getElementById('loadingOverlay');
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 10);
 
-            // Ambil data dari form
             const email = document.getElementById('customerEmail').value;
             const productRaw = document.querySelector('input[name="product"]:checked').value;
             const affCode = document.getElementById('affiliateCode').value;
             
-            // Pecah value produk (Format: "Nama Produk|Harga")
             const productSplit = productRaw.split('|');
             const productName = productSplit[0];
             const productPrice = parseInt(productSplit[1]);
@@ -224,101 +224,94 @@
             };
 
             try {
-                // Tembak API Google Apps Script dengan metode anti-CORS
-                // Kita gunakan fetch POST dengan body JSON stringified yang dibaca sebagai text/plain oleh GAS
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    redirect: 'follow', // Penting untuk GAS karena dia suka nge-redirect saat merespon POST
+                    redirect: 'follow', 
                     body: JSON.stringify({ action: 'checkout', payload: payload })
                 });
                 
-                // Cek jika response tidak ok (gagal fetch)
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                const textResponse = await response.text();
+                if (textResponse.trim().startsWith('<')) {
+                    throw new Error("Received HTML response instead of JSON");
                 }
-
-                const result = await response.json();
+                const result = JSON.parse(textResponse);
                 
-                // Sembunyikan loading
                 overlay.style.opacity = '0';
                 setTimeout(() => { overlay.style.display = 'none'; }, 300);
 
                 if (result.status === 'success') {
-                    // Sembunyikan form, tampilkan Halaman Instruksi Pembayaran
                     document.getElementById('checkoutForm').style.display = 'none';
                     tampilkanInstruksiPembayaran(productPrice);
-                    showToast("Pesanan tercatat! Silakan lakukan pembayaran.", "success");
+                    showToast("Pesanan dicatat! Silakan transfer.", "success");
                 } else {
                     showToast(result.message || "Gagal memproses pesanan", "error");
                 }
                 
             } catch (error) {
-                overlay.style.opacity = '0';
-                setTimeout(() => { overlay.style.display = 'none'; }, 300);
-                showToast("Terjadi kesalahan jaringan atau CORS", "error");
-                console.error("Fetch Error:", error);
-                
-                // Trik fallback darurat jika CORS Vercel benar-benar nge-block fetch POST
-                console.log("Mencoba fallback mode no-cors...");
+                // Fallback untuk penanganan network / mode no-cors
                 fetch(API_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: JSON.stringify({ action: 'checkout', payload: payload })
                 }).then(() => {
-                     document.getElementById('checkoutForm').style.display = 'none';
-                     tampilkanInstruksiPembayaran(productPrice);
-                     showToast("Pesanan tercatat! Silakan lakukan pembayaran.", "success");
-                }).catch(e => console.error("Fallback gagal juga", e));
+                    overlay.style.opacity = '0';
+                    setTimeout(() => { overlay.style.display = 'none'; }, 300);
+                    
+                    document.getElementById('checkoutForm').style.display = 'none';
+                    tampilkanInstruksiPembayaran(productPrice);
+                    showToast("Pesanan dicatat! Silakan transfer.", "success");
+                }).catch(e => {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => { overlay.style.display = 'none'; }, 300);
+                    showToast("Gagal menyambung ke server.", "error");
+                });
             }
         }
 
-        // FUNGSI RENDER HALAMAN PEMBAYARAN
         function tampilkanInstruksiPembayaran(nominal) {
-            // 1. Format Nominal
             const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
             document.getElementById('paymentAmount').innerText = formatter.format(nominal);
             
-            // 2. Render Bank (Bisa lebih dari 1)
             const bankContainer = document.getElementById('bankListContainer');
             bankContainer.innerHTML = '';
-            paymentConfig.banks.forEach(b => {
-                bankContainer.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100 hover:border-blue-300 transition-colors">
-                        <div>
-                            <p class="font-bold text-gray-800">${b.bank}</p>
-                            <p class="text-sm font-medium text-gray-600">${b.rek} <span class="text-xs text-gray-400 font-normal">a.n ${b.owner}</span></p>
+            
+            // Loop data rekening yang diambil dinamis dari Google Sheets
+            if (storeSettings.banks && storeSettings.banks.length > 0) {
+                storeSettings.banks.forEach(b => {
+                    bankContainer.innerHTML += `
+                        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100 hover:border-blue-300 transition-colors">
+                            <div>
+                                <p class="font-bold text-gray-800">${b.bank}</p>
+                                <p class="text-sm font-medium text-gray-600">${b.rek} <span class="text-xs text-gray-400 font-normal">a.n ${b.owner}</span></p>
+                            </div>
+                            <button type="button" onclick="salinTeks('${b.rek}')" class="text-blue-600 hover:text-white bg-blue-100 hover:bg-blue-600 px-3 py-2 rounded-lg text-xs font-semibold transition-all">
+                                <i class="fa-regular fa-copy mr-1"></i> Salin
+                            </button>
                         </div>
-                        <button type="button" onclick="salinTeks('${b.rek}')" class="text-blue-600 hover:text-white bg-blue-100 hover:bg-blue-600 p-2 rounded-lg text-sm font-semibold transition-all">
-                            <i class="fa-regular fa-copy"></i> Salin
-                        </button>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            } else {
+                bankContainer.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">Belum ada rekening diatur.</p>`;
+            }
 
-            // 3. Render QRIS
-            document.getElementById('qrisImage').src = paymentConfig.qrisImage;
-
-            // 4. Tampilkan Screen
+            document.getElementById('qrisImage').src = storeSettings.qrisImage || "";
             document.getElementById('paymentScreen').style.display = 'block';
         }
 
-        // FUNGSI SALIN NOMOR REKENING
         function salinTeks(text) {
-            // Pake execCommand buat support iframe/mobile lama
             const tempInput = document.createElement("input");
             tempInput.value = text;
             document.body.appendChild(tempInput);
             tempInput.select();
             document.execCommand("copy");
             document.body.removeChild(tempInput);
-            showToast("Nomor rekening tersalin!", "success");
+            showToast("Nomor rekening berhasil disalin!", "success");
         }
 
-        // FUNGSI KONFIRMASI WA
         function confirmPaymentWA() {
             const email = document.getElementById('customerEmail').value;
-            const text = `Halo Admin, saya ingin konfirmasi pembayaran untuk pesanan Whitelabel.\n\nEmail: ${email}\nStatus: Sudah Transfer`;
-            window.open(`https://wa.me/${paymentConfig.waAdmin}?text=${encodeURIComponent(text)}`, '_blank');
+            const text = `Halo Admin, saya mau konfirmasi pembayaran Whitelabel.\n\nEmail Pemesan: ${email}\nStatus: Sudah Transfer (Mohon dicek mutasinya)`;
+            window.open(`https://wa.me/${storeSettings.waAdmin}?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
 </body>
