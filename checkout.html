@@ -111,15 +111,53 @@
                 </button>
             </form>
             
-            <div id="successScreen" style="display: none;" class="text-center py-6">
-                <div class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
-                    <i class="fa-solid fa-check"></i>
+            <!-- Payment Instruction Screen -->
+            <div id="paymentScreen" style="display: none;" class="py-2">
+                <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                    <i class="fa-solid fa-wallet"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">Pembayaran Berhasil!</h2>
-                <p class="text-gray-600 mb-6">Terima kasih. Sistem kami sedang menyiapkan produk Anda. Cek kotak masuk email Anda dalam 5 menit ke depan.</p>
-                <button onclick="window.location.reload()" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-colors">
-                    Kembali
-                </button>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">Menunggu Pembayaran</h2>
+                <p class="text-gray-600 mb-6 text-center text-sm">Silakan selesaikan pembayaran sesuai nominal ke salah satu opsi di bawah ini.</p>
+                
+                <!-- Nominal Tagihan -->
+                <div class="bg-blue-50 rounded-xl p-4 mb-6 text-center border border-blue-100 shadow-sm">
+                    <p class="text-sm text-gray-600 mb-1">Total Tagihan:</p>
+                    <h3 class="text-3xl font-bold text-blue-700" id="paymentAmount">Rp 0</h3>
+                </div>
+
+                <!-- Opsi Pembayaran -->
+                <div class="space-y-4 text-left">
+                    <!-- Transfer Bank -->
+                    <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-gray-50 px-4 py-3 font-bold text-gray-700 border-b border-gray-200 flex items-center">
+                            <i class="fa-solid fa-building-columns text-blue-500 mr-2"></i> Transfer Bank
+                        </div>
+                        <div class="p-4 space-y-3 bg-white" id="bankListContainer">
+                            <!-- Diisi otomatis lewat Javascript -->
+                        </div>
+                    </div>
+
+                    <!-- QRIS -->
+                    <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-gray-50 px-4 py-3 font-bold text-gray-700 border-b border-gray-200 flex items-center">
+                            <i class="fa-solid fa-qrcode text-blue-500 mr-2"></i> QRIS Statis
+                        </div>
+                        <div class="p-6 bg-white flex flex-col items-center">
+                            <img id="qrisImage" src="" alt="QRIS" class="max-w-[200px] rounded-lg shadow-sm border border-gray-100 mb-3">
+                            <p class="text-xs text-gray-500 text-center">Scan QR code di atas menggunakan m-banking atau e-wallet (OVO, Gopay, Dana, LinkAja).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Konfirmasi -->
+                <div class="mt-8 space-y-3">
+                    <button onclick="confirmPaymentWA()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-green-500/30 flex justify-center items-center text-lg">
+                        <i class="fa-brands fa-whatsapp mr-2 text-xl"></i> Konfirmasi ke Admin
+                    </button>
+                    <button onclick="window.location.reload()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 rounded-xl transition-colors">
+                        Kembali Selesai
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -127,6 +165,17 @@
     <script>
         // MASUKIN URL WEB APP GAS LU DI SINI!! SAMA KAYAK YANG DI INDEX.HTML
         const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec";
+
+        // KONFIGURASI PEMBAYARAN LU DI SINI BRO!
+        const paymentConfig = {
+            waAdmin: "6281234567890", // Nomor WA konfirmasi (pakai 62 depannya)
+            qrisImage: "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=DUMMY_QRIS_GANTI_PAKE_LINK_GAMBAR_ASLI", // Link gambar QRIS lo
+            banks: [
+                { bank: "BCA", rek: "1234567890", owner: "PT Whitelabel Indo" },
+                { bank: "Bank Mandiri", rek: "0987654321", owner: "PT Whitelabel Indo" },
+                { bank: "BSI", rek: "1122334455", owner: "PT Whitelabel Indo" }
+            ]
+        };
 
         // Toast Notification Helper
         function showToast(message, type) {
@@ -195,10 +244,10 @@
                 setTimeout(() => { overlay.style.display = 'none'; }, 300);
 
                 if (result.status === 'success') {
-                    // Sembunyikan form, tampilkan pesan sukses
+                    // Sembunyikan form, tampilkan Halaman Instruksi Pembayaran
                     document.getElementById('checkoutForm').style.display = 'none';
-                    document.getElementById('successScreen').style.display = 'block';
-                    showToast("Pembayaran dikonfirmasi!", "success");
+                    tampilkanInstruksiPembayaran(productPrice);
+                    showToast("Pesanan tercatat! Silakan lakukan pembayaran.", "success");
                 } else {
                     showToast(result.message || "Gagal memproses pesanan", "error");
                 }
@@ -210,8 +259,6 @@
                 console.error("Fetch Error:", error);
                 
                 // Trik fallback darurat jika CORS Vercel benar-benar nge-block fetch POST
-                // Fallback ini menggunakan mode 'no-cors'. Kelemahannya kita ga bisa baca response JSON-nya (opaque),
-                // tapi datanya TETAP MASUK ke Google Sheets.
                 console.log("Mencoba fallback mode no-cors...");
                 fetch(API_URL, {
                     method: 'POST',
@@ -219,10 +266,59 @@
                     body: JSON.stringify({ action: 'checkout', payload: payload })
                 }).then(() => {
                      document.getElementById('checkoutForm').style.display = 'none';
-                     document.getElementById('successScreen').style.display = 'block';
-                     showToast("Permintaan terkirim (Fallback mode)", "success");
+                     tampilkanInstruksiPembayaran(productPrice);
+                     showToast("Pesanan tercatat! Silakan lakukan pembayaran.", "success");
                 }).catch(e => console.error("Fallback gagal juga", e));
             }
+        }
+
+        // FUNGSI RENDER HALAMAN PEMBAYARAN
+        function tampilkanInstruksiPembayaran(nominal) {
+            // 1. Format Nominal
+            const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
+            document.getElementById('paymentAmount').innerText = formatter.format(nominal);
+            
+            // 2. Render Bank (Bisa lebih dari 1)
+            const bankContainer = document.getElementById('bankListContainer');
+            bankContainer.innerHTML = '';
+            paymentConfig.banks.forEach(b => {
+                bankContainer.innerHTML += `
+                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100 hover:border-blue-300 transition-colors">
+                        <div>
+                            <p class="font-bold text-gray-800">${b.bank}</p>
+                            <p class="text-sm font-medium text-gray-600">${b.rek} <span class="text-xs text-gray-400 font-normal">a.n ${b.owner}</span></p>
+                        </div>
+                        <button type="button" onclick="salinTeks('${b.rek}')" class="text-blue-600 hover:text-white bg-blue-100 hover:bg-blue-600 p-2 rounded-lg text-sm font-semibold transition-all">
+                            <i class="fa-regular fa-copy"></i> Salin
+                        </button>
+                    </div>
+                `;
+            });
+
+            // 3. Render QRIS
+            document.getElementById('qrisImage').src = paymentConfig.qrisImage;
+
+            // 4. Tampilkan Screen
+            document.getElementById('paymentScreen').style.display = 'block';
+        }
+
+        // FUNGSI SALIN NOMOR REKENING
+        function salinTeks(text) {
+            // Pake execCommand buat support iframe/mobile lama
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showToast("Nomor rekening tersalin!", "success");
+        }
+
+        // FUNGSI KONFIRMASI WA
+        function confirmPaymentWA() {
+            const email = document.getElementById('customerEmail').value;
+            const text = `Halo Admin, saya ingin konfirmasi pembayaran untuk pesanan Whitelabel.\n\nEmail: ${email}\nStatus: Sudah Transfer`;
+            window.open(`https://wa.me/${paymentConfig.waAdmin}?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
 </body>
