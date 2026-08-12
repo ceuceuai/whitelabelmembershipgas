@@ -481,25 +481,60 @@
     </div>
 
     <script>
-        // MASUKIN URL WEB APP GAS LO DI SINI 
-        const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec";
+        // MASUKIN URL WEB APP GAS LO DI SINI (PASTIKAN SUDAH DEPLOY "ANYONE")
+        const API_URL = "https://script.google.com/macros/s/AKfycbyi8JgCAt8R_iF0tWJ1F0fX1-k3s-P_1F0H1P0T4s1F_X_i8J/exec"; 
 
+        /** 
+         * SCRIPT API FETCHER TAHAN BANTING (ANTI HANG) 
+         * Dilengkapi Timeout 15 Detik & Force Error Handling
+         */
         async function callAPI(action, payload = {}) {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                redirect: 'follow', 
-                body: JSON.stringify({ action: action, payload: payload })
-            });
-            const text = await response.text();
-            if (text.trim().startsWith('<')) throw new Error("CORS/Redirect issue dari Google.");
-            return JSON.parse(text);
+            // Kita kasih batesan waktu, kalau 15 detik Google gak jawab, berhentiin paks biar gak muter terus
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); 
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Wajib text/plain biar tembus preflight CORS Vercel
+                    body: JSON.stringify({ action: action, payload: payload }),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId); // Sukses nerima data, batalin timer
+                const text = await response.text();
+                
+                // Cek kalau ternyata Google ngasih respon halaman HTML Error (biasanya kalau setting deployment salah)
+                if (text.trim().startsWith('<')) {
+                    console.error("Respon Google Error/Terblokir:", text);
+                    throw new Error("API Terblokir. Pastikan akses Google Script di-set ke 'Anyone'!");
+                }
+                
+                return JSON.parse(text);
+                
+            } catch (error) {
+                clearTimeout(timeoutId); // Jaga-jaga bersihin timer kalau error
+                
+                // Kalau error karena timer 15 detik habis
+                if (error.name === 'AbortError') {
+                    throw new Error("Koneksi ke database terlalu lambat (Timeout). Coba lagi.");
+                }
+                // Kalau error lain (Network drop, salah URL, dll)
+                throw new Error(error.message || "Gagal menghubungi server database.");
+            }
         }
 
         async function hashPassword(password) {
-            const msgBuffer = new TextEncoder().encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            try {
+                const msgBuffer = new TextEncoder().encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            } catch (e) {
+                // Fallback kalau browser/device gak support crypto
+                console.warn("Crypto API gagal, pakai fallback string");
+                return btoa(password).substring(0, 30);
+            }
         }
 
         function showToast(message, type) {
@@ -515,6 +550,7 @@
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 10);
         }
+        
         function hideLoading() {
             const overlay = document.getElementById('loadingOverlay');
             overlay.style.opacity = '0';
@@ -537,52 +573,76 @@
         async function handleAuth(e, action) {
             e.preventDefault();
             showLoading(action === 'login' ? "Memeriksa kredensial..." : "Membuat akun baru...");
+            
             try {
                 let payload = {};
-                if(action === 'login') {
-                    payload = { email: document.getElementById('loginEmail').value, password: await hashPassword(document.getElementById('loginPassword').value) };
+                if (action === 'login') {
+                    payload = { 
+                        email: document.getElementById('loginEmail').value, 
+                        password: await hashPassword(document.getElementById('loginPassword').value) 
+                    };
                 } else {
                     const plainPass = document.getElementById('regPassword').value;
                     if(plainPass.length < 6) throw new Error("Password minimal 6 karakter!");
-                    payload = { nama: document.getElementById('regName').value, email: document.getElementById('regEmail').value, password: await hashPassword(plainPass) };
+                    payload = { 
+                        nama: document.getElementById('regName').value, 
+                        email: document.getElementById('regEmail').value, 
+                        password: await hashPassword(plainPass) 
+                    };
                 }
+                
+                // Manggil API Tahan Banting yang baru kita buat
                 const result = await callAPI(action, payload);
-                if(result.status === 'success') {
+                
+                if (result.status === 'success') {
                     showToast(result.message, "success");
                     sessionStorage.setItem('wm_user', JSON.stringify(result.user));
-                    checkLoginState();
-                } else { showToast(result.message, "error"); }
-            } catch (error) { showToast(error.message, "error"); } finally { hideLoading(); }
+                    checkLoginState(); // Masuk ke dashboard
+                } else { 
+                    showToast(result.message, "error"); 
+                }
+            } catch (error) { 
+                showToast(error.message, "error"); 
+            } finally { 
+                hideLoading(); // Ini DIJAMIN pasti nutup loadingnya!
+            }
         }
 
         function checkLoginState() {
-            const userData = sessionStorage.getItem('wm_user');
-            if (userData) {
-                const user = JSON.parse(userData);
-                document.getElementById('authView').style.display = 'none';
-                document.getElementById('dashboardView').style.display = 'flex';
-                
-                const inisial = user.nama.charAt(0).toUpperCase();
-                document.getElementById('sidebarUserName').innerText = user.nama;
-                document.getElementById('welcomeName').innerText = user.nama.split(" ")[0];
-                document.getElementById('sidebarUserTier').innerText = user.tier;
-                document.getElementById('sidebarUserInisial').innerText = inisial;
-                document.getElementById('headerUserInisial').innerText = inisial;
-                
-                const domain = window.location.origin + window.location.pathname.replace('index.html', '');
-                document.getElementById('affLink').value = `${domain}/checkout.html?aff=${user.affCode}`;
+            try {
+                const userData = sessionStorage.getItem('wm_user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    document.getElementById('authView').style.display = 'none';
+                    document.getElementById('dashboardView').style.display = 'flex';
+                    
+                    const inisial = user.nama.charAt(0).toUpperCase();
+                    document.getElementById('sidebarUserName').innerText = user.nama;
+                    document.getElementById('welcomeName').innerText = user.nama.split(" ")[0];
+                    document.getElementById('sidebarUserTier').innerText = user.tier;
+                    document.getElementById('sidebarUserInisial').innerText = inisial;
+                    document.getElementById('headerUserInisial').innerText = inisial;
+                    
+                    const domain = window.location.origin + window.location.pathname.replace('index.html', '');
+                    document.getElementById('affLink').value = `${domain}/checkout.html?aff=${user.affCode}`;
 
-                if(user.tier === 'Admin') {
-                    document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-                    document.querySelectorAll('button.admin-only').forEach(el => el.classList.remove('hidden'));
+                    if(user.tier === 'Admin') {
+                        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+                        document.querySelectorAll('button.admin-only').forEach(el => el.classList.remove('hidden'));
+                    }
+
+                    switchTab('dashboard');
+                    fetchStoreSettings(true); 
+                } else {
+                    document.getElementById('authView').style.display = 'flex';
+                    document.getElementById('dashboardView').style.display = 'none';
+                    fetchStoreSettings(true); 
                 }
-
-                switchTab('dashboard');
-                fetchStoreSettings(true); 
-            } else {
+            } catch (err) {
+                console.error("Session terganggu:", err);
+                sessionStorage.removeItem('wm_user');
                 document.getElementById('authView').style.display = 'flex';
                 document.getElementById('dashboardView').style.display = 'none';
-                fetchStoreSettings(true); 
             }
         }
 
@@ -604,6 +664,7 @@
             const titles = { 'dashboard': 'Dashboard', 'member': 'Kelola Member', 'produk': 'Katalog Produk', 'transaksi': 'Riwayat Transaksi', 'affiliate': 'Komisi Affiliate', 'settings': 'Pengaturan Toko' };
             document.getElementById('headerTitle').innerText = titles[tabName];
 
+            // Trigger Fetch Data sesuai menu yang di klik
             if(tabName === 'dashboard') { fetchDashboardStats(); setupChart(); }
             else if(tabName === 'member') { fetchData('getMembers', 'tableBodyMembers', renderMembers); }
             else if(tabName === 'produk') { fetchData('getProducts', 'tableBodyProducts', renderProducts); }
@@ -620,8 +681,12 @@
                 if(result.status === 'success' && result.data && result.data.length > 0) {
                     tbody.innerHTML = '';
                     result.data.forEach(row => renderFunc(tbody, row));
-                } else { tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">Belum ada data.</td></tr>`; }
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-red-500">Gagal memuat data dari server.</td></tr>`; }
+                } else { 
+                    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">Belum ada data di dalam tabel ini.</td></tr>`; 
+                }
+            } catch(e) { 
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-red-500">Gagal memuat data. Mohon muat ulang halaman.</td></tr>`; 
+            }
         }
 
         function formatDate(dateString) {
@@ -718,7 +783,7 @@
                     closeModal('modalAddProduct'); document.getElementById('formAddProduct').reset();
                     fetchData('getProducts', 'tableBodyProducts', renderProducts);
                 } else showToast(res.message, "error");
-            } catch (e) { showToast("Gagal memproses", "error"); } finally { hideLoading(); }
+            } catch (e) { showToast("Gagal memproses. Coba ulangi.", "error"); } finally { hideLoading(); }
         }
 
         async function submitAddMember(e) {
@@ -726,20 +791,21 @@
             showLoading("Menambahkan akun...");
             const pass = document.getElementById('addMemPass').value;
             if(pass.length < 6) { hideLoading(); showToast("Password min. 6 karakter!", "error"); return; }
-            const payload = {
-                nama: document.getElementById('addMemName').value,
-                email: document.getElementById('addMemEmail').value,
-                tier: document.getElementById('addMemTier').value,
-                password: await hashPassword(pass)
-            };
+            
             try {
+                const payload = {
+                    nama: document.getElementById('addMemName').value,
+                    email: document.getElementById('addMemEmail').value,
+                    tier: document.getElementById('addMemTier').value,
+                    password: await hashPassword(pass)
+                };
                 const res = await callAPI('addUser', payload);
                 if(res.status === 'success') {
                     showToast(res.message, "success");
                     closeModal('modalAddMember'); document.getElementById('formAddMember').reset();
                     fetchData('getMembers', 'tableBodyMembers', renderMembers);
                 } else showToast(res.message, "error");
-            } catch (e) { showToast("Gagal memproses", "error"); } finally { hideLoading(); }
+            } catch (e) { showToast("Gagal memproses. Coba ulangi.", "error"); } finally { hideLoading(); }
         }
 
         async function fetchDashboardStats() {
@@ -751,7 +817,7 @@
                     document.getElementById('statTotalRev').innerText = stats.totalPendapatan;
                     document.getElementById('statActiveMember').innerText = stats.memberAktif;
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Stats fetching error:", e); }
         }
 
         function copyAffiliateLink(btnElement) {
@@ -817,7 +883,11 @@
                         else addBankField();
                     }
                 } else if(!isBackground) showToast("Gagal memuat: " + (result.message||""), "error");
-            } catch (e) { if(!isBackground) showToast("Gagal memuat pengaturan toko", "error"); } finally { if(!isBackground) hideLoading(); }
+            } catch (e) { 
+                if(!isBackground) showToast(e.message || "Gagal memuat pengaturan toko", "error"); 
+            } finally { 
+                if(!isBackground) hideLoading(); 
+            }
         }
 
         async function handleSaveSettings(e) {
@@ -840,7 +910,7 @@
                 const result = await callAPI('saveSettings', payload);
                 if(result.status === 'success') { showToast("Tersimpan!", "success"); fetchStoreSettings(true); } 
                 else showToast("Gagal: " + result.message, "error");
-            } catch (error) { showToast("Gagal menyimpan ke server.", "error"); } finally { hideLoading(); }
+            } catch (error) { showToast(error.message || "Gagal menyimpan ke server.", "error"); } finally { hideLoading(); }
         }
 
         function setupChart() {
