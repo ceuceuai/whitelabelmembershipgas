@@ -16,10 +16,8 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        sidebar: '#161b2a',
-                        sidebarhover: '#242b42',
-                        brandblue: '#3b82f6',
-                        bglight: '#f8f9fc'
+                        sidebar: '#161b2a', sidebarhover: '#242b42',
+                        brandblue: '#3b82f6', bglight: '#f8f9fc'
                     }
                 }
             }
@@ -60,42 +58,38 @@
         .toast-msg.show { transform: translateX(0); }
         .toast-success { background-color: #10b981; }
         .toast-error { background-color: #ef4444; }
+        
+        .data-table th { background-color: #f8fafc; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; color: #64748b; padding: 1rem; border-bottom: 1px solid #e2e8f0; text-align: left; }
+        .data-table td { padding: 1rem; border-bottom: 1px solid #e2e8f0; font-size: 0.875rem; color: #334155; }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover { background-color: #f8fafc; }
     </style>
 </head>
 <body class="bg-bglight text-gray-800 font-sans h-screen overflow-hidden">
 
-    <!-- Global Loading -->
     <div id="loadingOverlay" style="display: none; opacity: 0;">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-500 mb-3"></i>
         <p id="loadingText" class="text-sm font-medium text-gray-600">Memproses...</p>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast" class="toast-msg">Pesan disini</div>
 
-    <!-- VIEW 1: AUTHENTICATION (LOGIN/REGISTER) -->
     <div id="authView" class="h-full w-full flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl flex max-w-4xl w-full overflow-hidden min-h-[550px]">
-            <!-- Kiri: Desain Branding -->
             <div class="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 p-12 flex-col justify-between text-white relative overflow-hidden">
                 <div class="relative z-10">
-                    <div id="authBrandLogo" class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-xl backdrop-blur-sm mb-6">WM</div>
-                    <h1 id="authBrandName" class="text-4xl font-extrabold mb-4 leading-tight">Mulai Bisnis<br>Digital Anda.</h1>
+                    <div id="authBrandLogo" class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-xl backdrop-blur-sm mb-6 overflow-hidden">WM</div>
+                    <h1 id="authBrandName" class="text-4xl font-extrabold mb-4 leading-tight">Whitelabel<br>Membership.</h1>
                     <p class="text-blue-100 opacity-90">Kelola member, produk, dan sistem affiliate dalam satu ekosistem yang terintegrasi secara seamless.</p>
                 </div>
-                <!-- Abstract Circles -->
                 <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-2xl opacity-70"></div>
                 <div class="absolute top-10 -right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-2xl opacity-70"></div>
             </div>
 
-            <!-- Kanan: Form -->
             <div class="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-center relative">
-                
-                <!-- Form Login -->
                 <div id="formLoginContainer">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Selamat Datang Kembali</h2>
                     <p class="text-sm text-gray-500 mb-8">Silakan masukkan detail akun Anda untuk masuk ke Dashboard.</p>
-                    
                     <form id="loginForm" class="space-y-5" onsubmit="handleAuth(event, 'login')">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
@@ -114,11 +108,9 @@
                     </p>
                 </div>
 
-                <!-- Form Register -->
                 <div id="formRegisterContainer" style="display: none;">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Buat Akun Baru</h2>
                     <p class="text-sm text-gray-500 mb-6">Daftar sekarang untuk mendapatkan akses ke platform.</p>
-                    
                     <form id="registerForm" class="space-y-4" onsubmit="handleAuth(event, 'register')">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
@@ -140,46 +132,42 @@
                         Sudah punya akun? <a href="#" onclick="toggleAuthView('login')" class="text-blue-600 font-bold hover:underline">Masuk di sini</a>
                     </p>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- VIEW 2: DASHBOARD APP -->
     <div id="dashboardView" class="h-full w-full flex" style="display: none;">
-        <!-- Sidebar -->
         <aside class="w-64 bg-sidebar text-gray-300 flex flex-col h-full hidden md:flex flex-shrink-0">
             <div class="h-20 flex items-center px-6 border-b border-gray-800">
                 <div id="sidebarBrandLogo" class="w-10 h-10 bg-brandblue rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30 mr-3 overflow-hidden">WM</div>
                 <div>
-                    <h1 id="sidebarBrandName" class="text-white font-bold text-sm tracking-wide leading-tight">Whitelabel</h1>
+                    <h1 id="sidebarBrandName" class="text-white font-bold text-sm tracking-wide leading-tight truncate w-36">Whitelabel</h1>
                     <p class="text-[10px] text-blue-400 tracking-wider uppercase mt-1">Membership</p>
                 </div>
             </div>
 
             <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all">
+                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all nav-item">
                     <i class="fa-solid fa-border-all w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Dashboard</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
+                <a href="#" onclick="switchTab('member')" id="nav-member" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-users w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Member</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
+                <a href="#" onclick="switchTab('produk')" id="nav-produk" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-box w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Produk</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
+                <a href="#" onclick="switchTab('transaksi')" id="nav-transaksi" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-wallet w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Transaksi</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
+                <a href="#" onclick="switchTab('affiliate')" id="nav-affiliate" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-handshake w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Affiliate</span>
                 </a>
-                <!-- MENU PENGATURAN -->
-                <a href="#" onclick="switchTab('settings')" id="nav-settings" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all">
+                <a href="#" onclick="switchTab('settings')" id="nav-settings" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item admin-only" style="display:none;">
                     <i class="fa-solid fa-gear w-6 text-center text-lg"></i>
                     <span class="ml-3 text-sm font-medium">Pengaturan</span>
                 </a>
@@ -193,13 +181,12 @@
                         <p id="sidebarUserTier" class="text-xs text-gray-500">Member</p>
                     </div>
                 </div>
-                <button onclick="doLogout()" class="mt-4 flex items-center text-red-400 hover:text-red-300 text-sm font-medium px-2 py-1 w-full text-left">
+                <button onclick="doLogout()" class="mt-4 flex items-center text-red-400 hover:text-red-300 text-sm font-medium px-2 py-1 w-full text-left transition-colors">
                     <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Keluar Akun
                 </button>
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-1 flex flex-col h-full overflow-hidden">
             <header class="h-20 bg-white/50 backdrop-blur-sm px-8 flex items-center justify-between border-b border-gray-100 flex-shrink-0">
                 <div>
@@ -210,11 +197,10 @@
                 </div>
             </header>
 
-            <div class="flex-1 overflow-y-auto p-8">
+            <div class="flex-1 overflow-y-auto p-8 relative">
                 
                 <!-- TAB DASHBOARD -->
-                <div id="tab-dashboard" class="space-y-6">
-                    <!-- Welcome Banner -->
+                <div id="tab-dashboard" class="tab-content space-y-6">
                     <div class="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg flex items-center justify-between relative overflow-hidden">
                         <div class="relative z-10">
                             <h2 class="text-2xl font-bold mb-1">Halo, <span id="welcomeName">Member</span>! 👋</h2>
@@ -226,22 +212,22 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div class="bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Member</p>
-                            <h3 id="statTotalMember" class="text-3xl font-extrabold mb-1">...</h3>
+                            <h3 id="statTotalMember" class="text-3xl font-extrabold mb-1">0</h3>
                             <div class="card-decoration"></div>
                         </div>
                         <div class="bg-gradient-to-br from-indigo-500 to-purple-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Transaksi</p>
-                            <h3 id="statTotalTx" class="text-3xl font-extrabold mb-1">...</h3>
+                            <h3 id="statTotalTx" class="text-3xl font-extrabold mb-1">0</h3>
                             <div class="card-decoration"></div>
                         </div>
                         <div class="bg-gradient-to-br from-pink-500 to-rose-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Pendapatan</p>
-                            <h3 id="statTotalRev" class="text-3xl font-extrabold mb-1">...</h3>
+                            <h3 id="statTotalRev" class="text-3xl font-extrabold mb-1">Rp 0</h3>
                             <div class="card-decoration"></div>
                         </div>
                         <div class="bg-gradient-to-br from-emerald-500 to-green-400 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Member Aktif</p>
-                            <h3 id="statActiveMember" class="text-3xl font-extrabold mb-1">...</h3>
+                            <h3 id="statActiveMember" class="text-3xl font-extrabold mb-1">0</h3>
                             <div class="card-decoration"></div>
                         </div>
                     </div>
@@ -267,10 +253,77 @@
                         </div>
                     </div>
                 </div>
-                <!-- END TAB DASHBOARD -->
+
+                <!-- TAB MEMBER -->
+                <div id="tab-member" class="tab-content space-y-6" style="display: none;">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Daftar Member Terdaftar</h3>
+                        </div>
+                        <div class="overflow-x-auto rounded-xl border border-gray-100">
+                            <table class="w-full data-table">
+                                <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Tier</th><th>Kode Affiliate</th><th>Tanggal Daftar</th></tr></thead>
+                                <tbody id="tableBodyMembers">
+                                    <tr><td colspan="6" class="text-center py-8 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB PRODUK -->
+                <div id="tab-produk" class="tab-content space-y-6" style="display: none;">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Produk Tersedia</h3>
+                        </div>
+                        <div class="overflow-x-auto rounded-xl border border-gray-100">
+                            <table class="w-full data-table">
+                                <thead><tr><th>ID Produk</th><th>Nama Produk</th><th>Harga</th><th>Komisi</th><th>Status</th></tr></thead>
+                                <tbody id="tableBodyProducts">
+                                    <tr><td colspan="5" class="text-center py-8 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB TRANSAKSI -->
+                <div id="tab-transaksi" class="tab-content space-y-6" style="display: none;">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Riwayat Transaksi</h3>
+                        </div>
+                        <div class="overflow-x-auto rounded-xl border border-gray-100">
+                            <table class="w-full data-table">
+                                <thead><tr><th>Invoice</th><th>Tanggal</th><th>Email Pembeli</th><th>Produk</th><th>Total Bayar</th><th>Status</th><th>Aksi</th></tr></thead>
+                                <tbody id="tableBodyTransactions">
+                                    <tr><td colspan="7" class="text-center py-8 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB AFFILIATE -->
+                <div id="tab-affiliate" class="tab-content space-y-6" style="display: none;">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Riwayat Komisi Affiliate</h3>
+                        </div>
+                        <div class="overflow-x-auto rounded-xl border border-gray-100">
+                            <table class="w-full data-table">
+                                <thead><tr><th>ID Komisi</th><th>Tanggal</th><th>Kode Affiliate</th><th>Nominal</th><th>Invoice Ref</th><th>Status</th></tr></thead>
+                                <tbody id="tableBodyCommissions">
+                                    <tr><td colspan="6" class="text-center py-8 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- TAB SETTINGS -->
-                <div id="tab-settings" class="space-y-6" style="display: none;">
+                <div id="tab-settings" class="tab-content space-y-6" style="display: none;">
                     <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center mb-6">
                             <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl mr-3">
@@ -283,37 +336,31 @@
                         </div>
 
                         <form id="settingsForm" onsubmit="handleSaveSettings(event)">
-                            
-                            <!-- Bagian Identitas Brand -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 pb-6 border-b border-gray-100">
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Nama Brand / Toko</label>
-                                    <input type="text" id="setStoreName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="Misal: KelasBisnis.com">
-                                    <p class="text-xs text-gray-500 mt-2">Nama ini akan tampil di Sidebar dan Halaman Checkout.</p>
+                                    <input type="text" id="setStoreName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all">
+                                    <p class="text-xs text-gray-500 mt-1">Nama ini akan tampil di Sidebar dan Halaman Checkout.</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">URL Logo Toko (Opsional)</label>
                                     <input type="text" id="setStoreLogo" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="https://imgur.com/logo-anda.png">
-                                    <p class="text-xs text-gray-500 mt-2">Link gambar logo. Kosongkan jika ingin pakai teks inisial.</p>
+                                    <p class="text-xs text-gray-500 mt-1">Link gambar logo. Kosongkan jika ingin pakai teks inisial.</p>
                                 </div>
                             </div>
-
-                            <!-- Bagian Pembayaran -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Nomor WhatsApp Admin</label>
                                     <div class="flex">
-                                        <span class="inline-flex items-center px-4 text-sm text-gray-900 bg-gray-100 border border-r-0 border-gray-200 rounded-l-xl font-bold">
-                                            <i class="fa-brands fa-whatsapp text-green-500 mr-2"></i> +62
-                                        </span>
-                                        <input type="text" id="setWa" class="rounded-none rounded-r-xl border border-gray-200 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-3 outline-none" placeholder="81234567890">
+                                        <span class="inline-flex items-center px-4 text-sm text-gray-900 bg-gray-100 border border-r-0 border-gray-200 rounded-l-xl font-bold">+62</span>
+                                        <input type="text" id="setWa" class="rounded-none rounded-r-xl border border-gray-200 text-gray-900 focus:ring-blue-500 block flex-1 min-w-0 w-full text-sm p-3 outline-none" placeholder="81234567890">
                                     </div>
-                                    <p class="text-xs text-gray-500 mt-2">Nomor untuk menerima bukti transfer dari pembeli.</p>
+                                    <p class="text-xs text-gray-500 mt-1">Nomor untuk menerima bukti transfer dari pembeli.</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">URL Gambar QRIS Statis (Opsional)</label>
                                     <input type="text" id="setQris" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="https://imgur.com/qris-anda.png">
-                                    <p class="text-xs text-gray-500 mt-2">Link gambar barcode QRIS. Kosongkan jika tidak pakai QRIS.</p>
+                                    <p class="text-xs text-gray-500 mt-1">Link gambar barcode QRIS. Kosongkan jika tidak pakai QRIS.</p>
                                 </div>
                             </div>
                             
@@ -324,11 +371,8 @@
                                         <i class="fa-solid fa-plus mr-1"></i> Tambah Rekening
                                     </button>
                                 </div>
-                                <div id="bankList" class="space-y-3">
-                                    <!-- Field bank akan muncul di sini via JS -->
-                                </div>
+                                <div id="bankList" class="space-y-3"></div>
                             </div>
-
                             <div class="pt-4 border-t border-gray-100">
                                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-lg shadow-blue-500/30 flex items-center">
                                     <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan Pengaturan
@@ -337,32 +381,32 @@
                         </form>
                     </div>
                 </div>
-                <!-- END TAB SETTINGS -->
 
             </div>
         </main>
     </div>
 
     <script>
-        // MASUKIN URL WEB APP GAS LO DI SINI!!
+        // MASUKIN URL WEB APP GAS LO DI SINI (Pastikan akhiran /exec)
         const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec";
+
+        // THE BULLETPROOF API CALLER (Semua request pakai POST biar bebas CORS Vercel)
+        async function callAPI(action, payload = {}) {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                redirect: 'follow', // GAS selalu butuh ini buat nanganin redirect intern Google
+                body: JSON.stringify({ action: action, payload: payload })
+            });
+            const text = await response.text();
+            if (text.trim().startsWith('<')) throw new Error("Terjadi masalah jaringan atau URL API tidak valid.");
+            return JSON.parse(text);
+        }
 
         async function hashPassword(password) {
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex; 
-        }
-
-        function toggleAuthView(view) {
-            if(view === 'register') {
-                document.getElementById('formLoginContainer').style.display = 'none';
-                document.getElementById('formRegisterContainer').style.display = 'block';
-            } else {
-                document.getElementById('formRegisterContainer').style.display = 'none';
-                document.getElementById('formLoginContainer').style.display = 'block';
-            }
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
         function showToast(message, type) {
@@ -385,6 +429,16 @@
             setTimeout(() => { overlay.style.display = 'none'; }, 300);
         }
 
+        function toggleAuthView(view) {
+            if(view === 'register') {
+                document.getElementById('formLoginContainer').style.display = 'none';
+                document.getElementById('formRegisterContainer').style.display = 'block';
+            } else {
+                document.getElementById('formRegisterContainer').style.display = 'none';
+                document.getElementById('formLoginContainer').style.display = 'block';
+            }
+        }
+
         async function handleAuth(e, action) {
             e.preventDefault();
             showLoading(action === 'login' ? "Memeriksa kredensial..." : "Membuat akun baru...");
@@ -392,52 +446,25 @@
             try {
                 let payload = {};
                 if(action === 'login') {
-                    const plainPass = document.getElementById('loginPassword').value;
-                    payload = { email: document.getElementById('loginEmail').value, password: await hashPassword(plainPass) };
+                    payload = { email: document.getElementById('loginEmail').value, password: await hashPassword(document.getElementById('loginPassword').value) };
                 } else {
                     const plainPass = document.getElementById('regPassword').value;
                     if(plainPass.length < 6) throw new Error("Password minimal 6 karakter!");
-                    payload = {
-                        nama: document.getElementById('regName').value,
-                        email: document.getElementById('regEmail').value,
-                        password: await hashPassword(plainPass)
-                    };
+                    payload = { nama: document.getElementById('regName').value, email: document.getElementById('regEmail').value, password: await hashPassword(plainPass) };
                 }
 
-                // FIX CORS & REDIRECT ISSUE
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    redirect: 'follow', // Penting biar gak di-block pas GAS nge-redirect URL
-                    body: JSON.stringify({ action: action, payload: payload })
-                });
-                
-                const textResponse = await response.text();
-                // Cegah JSON parse error kalau balasan dari google berupa halaman HTML peringatan
-                if(textResponse.trim().startsWith('<')) {
-                    throw new Error("Gagal terhubung. Pastikan Web App di-deploy dengan izin 'Anyone'.");
-                }
-                
-                const result = JSON.parse(textResponse);
+                const result = await callAPI(action, payload);
                 
                 if(result.status === 'success') {
                     showToast(result.message, "success");
                     sessionStorage.setItem('wm_user', JSON.stringify(result.user));
                     checkLoginState();
-                } else {
-                    showToast(result.message, "error");
-                }
-            } catch (error) {
-                console.error(error);
-                showToast(error.message || "Terjadi kesalahan jaringan.", "error");
-            } finally {
-                // Pastikan loading selalu ditutup apapun hasilnya
-                hideLoading();
-            }
+                } else { showToast(result.message, "error"); }
+            } catch (error) { showToast(error.message, "error"); } finally { hideLoading(); }
         }
 
         function checkLoginState() {
             const userData = sessionStorage.getItem('wm_user');
-            
             if (userData) {
                 const user = JSON.parse(userData);
                 document.getElementById('authView').style.display = 'none';
@@ -451,17 +478,15 @@
                 document.getElementById('headerUserInisial').innerText = inisial;
                 
                 const domain = window.location.origin + window.location.pathname.replace('index.html', '');
-                document.getElementById('affLink').value = `${domain}checkout.html?aff=${user.affCode}`;
+                document.getElementById('affLink').value = `${domain}/checkout.html?aff=${user.affCode}`;
 
-                fetchDashboardStats();
-                setupChart();
-                
-                // Load settings in background to update brand logo/name on dashboard
+                if(user.tier === 'Admin') document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+
+                switchTab('dashboard');
                 fetchStoreSettings(true); 
             } else {
                 document.getElementById('authView').style.display = 'flex';
                 document.getElementById('dashboardView').style.display = 'none';
-                // Fetch setting for Auth page branding
                 fetchStoreSettings(true); 
             }
         }
@@ -472,48 +497,149 @@
             showToast("Anda telah keluar.", "success");
         }
 
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.className = "flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item " + (el.classList.contains('admin-only') ? 'admin-only' : '');
+            });
+            
+            document.getElementById(`tab-${tabName}`).style.display = 'block';
+            document.getElementById(`nav-${tabName}`).className = "flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all nav-item " + (tabName === 'settings' ? 'admin-only' : '');
+            
+            const titles = { 'dashboard': 'Dashboard', 'member': 'Daftar Member', 'produk': 'Katalog Produk', 'transaksi': 'Riwayat Transaksi', 'affiliate': 'Komisi Affiliate', 'settings': 'Pengaturan Toko' };
+            document.getElementById('headerTitle').innerText = titles[tabName];
+
+            // Load Data using our new bulletproof POST API
+            if(tabName === 'dashboard') { fetchDashboardStats(); setupChart(); }
+            else if(tabName === 'member') { fetchData('getMembers', 'tableBodyMembers', renderMembers); }
+            else if(tabName === 'produk') { fetchData('getProducts', 'tableBodyProducts', renderProducts); }
+            else if(tabName === 'transaksi') { fetchData('getTransactions', 'tableBodyTransactions', renderTransactions); }
+            else if(tabName === 'affiliate') { fetchData('getCommissions', 'tableBodyCommissions', renderCommissions); }
+            else if(tabName === 'settings') { fetchStoreSettings(false); }
+        }
+
+        async function fetchData(action, tbodyId, renderFunc) {
+            const tbody = document.getElementById(tbodyId);
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat data...</td></tr>`;
+            try {
+                const result = await callAPI(action); // Memanggil API pake POST mode
+                if(result.status === 'success' && result.data && result.data.length > 0) {
+                    tbody.innerHTML = '';
+                    result.data.forEach(row => renderFunc(tbody, row));
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">Tidak ada data ditemukan.</td></tr>`;
+                }
+            } catch(e) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-red-500">Gagal memuat data dari server.</td></tr>`;
+            }
+        }
+
+        function formatDate(dateString) {
+            if(!dateString) return '-';
+            return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        function formatRupiah(nom) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(nom || 0); }
+
+        function renderMembers(tbody, row) {
+            tbody.innerHTML += `<tr>
+                <td class="font-mono text-xs text-gray-500">${row['User_ID']}</td>
+                <td class="font-semibold">${row['Nama']}</td><td>${row['Email']}</td>
+                <td><span class="px-2 py-1 bg-${row['Tier_Akses']==='Admin'?'purple':'blue'}-100 text-${row['Tier_Akses']==='Admin'?'purple':'blue'}-700 rounded text-xs font-bold">${row['Tier_Akses']}</span></td>
+                <td class="font-mono text-xs">${row['Affiliate_Code']}</td><td>${formatDate(row['Tanggal_Daftar'])}</td>
+            </tr>`;
+        }
+
+        function renderProducts(tbody, row) {
+            tbody.innerHTML += `<tr>
+                <td class="font-mono text-xs text-gray-500">${row['Product_ID']}</td>
+                <td class="font-semibold">${row['Nama_Produk']}</td>
+                <td class="text-green-600 font-bold">${formatRupiah(row['Harga'])}</td>
+                <td class="text-blue-600">${formatRupiah(row['Komisi_Affiliate'])}</td>
+                <td><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">${row['Status']}</span></td>
+            </tr>`;
+        }
+
+        function renderTransactions(tbody, row) {
+            const statusClass = row['Status_Pembayaran'] === 'PAID' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
+            const user = JSON.parse(sessionStorage.getItem('wm_user') || '{}');
+            let actionBtn = '-';
+            
+            if (user.tier === 'Admin' && row['Status_Pembayaran'] === 'PENDING') {
+                actionBtn = `<button onclick="approveTx('${row['Transaction_ID']}')" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold shadow-sm transition-colors">Approve</button>`;
+            }
+
+            tbody.innerHTML += `<tr>
+                <td class="font-mono text-xs text-gray-500">${row['Transaction_ID']}</td>
+                <td>${formatDate(row['Tanggal'])}</td><td>${row['Email_Pembeli']}</td><td>${row['Produk']}</td>
+                <td class="font-bold">${formatRupiah(row['Total_Bayar'])}</td>
+                <td><span class="px-2 py-1 ${statusClass} rounded text-xs font-bold">${row['Status_Pembayaran']}</span></td>
+                <td>${actionBtn}</td>
+            </tr>`;
+        }
+
+        function renderCommissions(tbody, row) {
+            const statusClass = row['Status_Pencairan'] === 'PAID' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+            tbody.innerHTML += `<tr>
+                <td class="font-mono text-xs text-gray-500">${row['Commission_ID']}</td>
+                <td>${formatDate(row['Tanggal'])}</td><td class="font-bold text-blue-600">${row['Affiliate_Code']}</td>
+                <td class="font-bold">${formatRupiah(row['Nominal'])}</td>
+                <td class="font-mono text-xs">${row['Transaction_ID']}</td>
+                <td><span class="px-2 py-1 ${statusClass} rounded text-xs font-bold">${row['Status_Pencairan']}</span></td>
+            </tr>`;
+        }
+
+        async function approveTx(id) {
+            if(!confirm(`Yakin ingin menyetujui transaksi ${id}?`)) return;
+            showLoading("Memproses persetujuan...");
+            try {
+                const result = await callAPI('approveTransaction', { transactionId: id });
+                if(result.status === 'success') {
+                    showToast(result.message, "success");
+                    fetchData('getTransactions', 'tableBodyTransactions', renderTransactions); 
+                } else showToast(result.message, "error");
+            } catch (e) { showToast("Gagal terhubung ke server", "error"); }
+            finally { hideLoading(); }
+        }
+
         async function fetchDashboardStats() {
             try {
-                const response = await fetch(API_URL + "?action=getStats");
-                const stats = await response.json();
+                const stats = await callAPI('getStats');
                 if(stats.status === 'success') {
                     document.getElementById('statTotalMember').innerText = stats.totalMember;
                     document.getElementById('statTotalTx').innerText = stats.totalTransaksi;
                     document.getElementById('statTotalRev').innerText = stats.totalPendapatan;
                     document.getElementById('statActiveMember').innerText = stats.memberAktif;
                 }
-            } catch (e) { console.error("Gagal nyambung API:", e); }
+            } catch (e) { console.error(e); }
         }
 
         function copyAffiliateLink(btnElement) {
             const copyText = document.getElementById("affLink");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            document.execCommand("copy");
+            copyText.select(); document.execCommand("copy");
             const originalHTML = btnElement.innerHTML;
             btnElement.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Tersalin!';
             btnElement.classList.replace('bg-gray-900', 'bg-green-500');
-            setTimeout(() => {
-                btnElement.innerHTML = originalHTML;
-                btnElement.classList.replace('bg-green-500', 'bg-gray-900');
-            }, 2000);
+            setTimeout(() => { btnElement.innerHTML = originalHTML; btnElement.classList.replace('bg-green-500', 'bg-gray-900'); }, 2000);
         }
-        
-        function switchTab(tabName) {
-            document.getElementById('tab-dashboard').style.display = 'none';
-            document.getElementById('tab-settings').style.display = 'none';
-            document.getElementById('nav-dashboard').className = "flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all";
-            document.getElementById('nav-settings').className = "flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all";
+
+        function updateBrandUI(set) {
+            const storeName = set.storeName || "Whitelabel";
+            document.title = `Dashboard | ${storeName}`;
+            document.getElementById('sidebarBrandName').innerText = storeName;
+            document.getElementById('authBrandName').innerHTML = `${storeName}.`;
             
-            if(tabName === 'dashboard') {
-                document.getElementById('tab-dashboard').style.display = 'block';
-                document.getElementById('nav-dashboard').className = "flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all";
-                document.getElementById('headerTitle').innerText = "Dashboard";
-            } else if (tabName === 'settings') {
-                document.getElementById('tab-settings').style.display = 'block';
-                document.getElementById('nav-settings').className = "flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all";
-                document.getElementById('headerTitle').innerText = "Pengaturan Toko";
-                fetchStoreSettings(false); 
+            const initHtml = storeName.substring(0, 2).toUpperCase();
+            if (set.storeLogo && set.storeLogo.startsWith('http')) {
+                const imgHtml = `<img src="${set.storeLogo}" class="w-full h-full object-cover" alt="Logo" onerror="this.outerHTML='${initHtml}'">`;
+                document.getElementById('sidebarBrandLogo').innerHTML = imgHtml;
+                document.getElementById('authBrandLogo').innerHTML = imgHtml;
+                document.getElementById('authBrandLogo').classList.remove('bg-white/20');
+                document.getElementById('sidebarBrandLogo').classList.remove('bg-brandblue');
+            } else {
+                document.getElementById('sidebarBrandLogo').innerHTML = initHtml;
+                document.getElementById('authBrandLogo').innerHTML = initHtml;
+                document.getElementById('authBrandLogo').classList.add('bg-white/20');
+                document.getElementById('sidebarBrandLogo').classList.add('bg-brandblue');
             }
         }
 
@@ -522,12 +648,10 @@
             const div = document.createElement('div');
             div.className = 'flex flex-col sm:flex-row gap-3 items-center bg-gray-50 p-3 rounded-xl border border-gray-200 bank-item';
             div.innerHTML = `
-                <input type="text" placeholder="Nama Bank (BCA/Mandiri)" value="${bank}" class="bank-name w-full sm:w-1/3 px-4 py-2 border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-sm">
+                <input type="text" placeholder="Nama Bank" value="${bank}" class="bank-name w-full sm:w-1/3 px-4 py-2 border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-sm">
                 <input type="text" placeholder="No. Rekening" value="${rek}" class="bank-rek w-full sm:w-1/3 px-4 py-2 border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-sm">
                 <input type="text" placeholder="Atas Nama" value="${owner}" class="bank-owner w-full sm:w-1/3 px-4 py-2 border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-sm">
-                <button type="button" onclick="this.parentElement.remove()" class="w-full sm:w-auto text-red-500 hover:text-white bg-red-50 hover:bg-red-500 p-2 rounded-lg transition-colors" title="Hapus Rekening">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+                <button type="button" onclick="this.parentElement.remove()" class="w-full sm:w-auto text-red-500 bg-red-50 hover:bg-red-500 hover:text-white p-2 rounded-lg transition-colors"><i class="fa-solid fa-trash"></i></button>
             `;
             container.appendChild(div);
         }
@@ -535,119 +659,62 @@
         async function fetchStoreSettings(isBackground = false) {
             if(!isBackground) showLoading("Memuat pengaturan...");
             try {
-                const response = await fetch(API_URL + "?action=getSettings", { redirect: 'follow' });
-                const textResp = await response.text();
-                if(textResp.trim().startsWith('<')) throw new Error("Format HTML terdeteksi");
-                const result = JSON.parse(textResp);
-                
+                const result = await callAPI('getSettings');
                 if (result.status === 'success' && result.settings) {
-                    const set = result.settings;
-                    
-                    // Update Identitas UI (Branding)
-                    const storeName = set.storeName || "Whitelabel";
-                    document.title = `Dashboard | ${storeName}`;
-                    document.getElementById('sidebarBrandName').innerText = storeName;
-                    document.getElementById('authBrandName').innerHTML = `Mulai Bisnis<br>${storeName}.`;
-                    
-                    if (set.storeLogo && set.storeLogo.startsWith('http')) {
-                        const imgHtml = `<img src="${set.storeLogo}" class="w-full h-full object-cover" alt="Logo">`;
-                        document.getElementById('sidebarBrandLogo').innerHTML = imgHtml;
-                        document.getElementById('authBrandLogo').innerHTML = imgHtml;
-                        document.getElementById('authBrandLogo').classList.remove('bg-white/20');
-                    } else {
-                        const initHtml = storeName.substring(0, 2).toUpperCase();
-                        document.getElementById('sidebarBrandLogo').innerHTML = initHtml;
-                        document.getElementById('authBrandLogo').innerHTML = initHtml;
-                    }
-
-                    // Kalau fungsi dipanggil buat ngisi Form Setting
+                    updateBrandUI(result.settings);
                     if(!isBackground) {
+                        const set = result.settings;
                         document.getElementById('setStoreName').value = set.storeName || "";
                         document.getElementById('setStoreLogo').value = set.storeLogo || "";
-                        
-                        let waNum = set.waAdmin || "";
-                        if(waNum.startsWith('62')) waNum = waNum.substring(2);
-                        document.getElementById('setWa').value = waNum;
+                        document.getElementById('setWa').value = (set.waAdmin||"").startsWith('62') ? set.waAdmin.substring(2) : set.waAdmin;
                         document.getElementById('setQris').value = set.qrisImage || "";
-                        
-                        const container = document.getElementById('bankList');
-                        container.innerHTML = '';
-                        if (set.banks && set.banks.length > 0) {
-                            set.banks.forEach(b => addBankField(b.bank, b.rek, b.owner));
-                        } else { addBankField(); }
+                        document.getElementById('bankList').innerHTML = '';
+                        if (set.banks && set.banks.length > 0) set.banks.forEach(b => addBankField(b.bank, b.rek, b.owner));
+                        else addBankField();
                     }
                 }
-            } catch (e) {
-                console.error("Gagal memuat setting:", e);
-                if(!isBackground) showToast("Gagal memuat pengaturan toko", "error");
-            } finally {
-                if(!isBackground) hideLoading();
-            }
+            } catch (e) { 
+                if(!isBackground) showToast("Gagal memuat pengaturan toko", "error"); 
+            } finally { if(!isBackground) hideLoading(); }
         }
 
         async function handleSaveSettings(e) {
             e.preventDefault();
             showLoading("Menyimpan pengaturan...");
-            
             let waRaw = document.getElementById('setWa').value.replace(/\D/g,'');
             if (waRaw.startsWith('0')) waRaw = waRaw.substring(1);
             
-            const bankItems = document.querySelectorAll('.bank-item');
             let banksArr = [];
-            bankItems.forEach(item => {
-                const bName = item.querySelector('.bank-name').value;
-                const bRek = item.querySelector('.bank-rek').value;
-                const bOwner = item.querySelector('.bank-owner').value;
-                if(bName && bRek) banksArr.push({ bank: bName, rek: bRek, owner: bOwner });
+            document.querySelectorAll('.bank-item').forEach(item => {
+                const n = item.querySelector('.bank-name').value, r = item.querySelector('.bank-rek').value, o = item.querySelector('.bank-owner').value;
+                if(n && r) banksArr.push({ bank: n, rek: r, owner: o });
             });
 
             const payload = {
-                storeName: document.getElementById('setStoreName').value,
-                storeLogo: document.getElementById('setStoreLogo').value,
-                waAdmin: waRaw ? "62" + waRaw : "",
-                qrisImage: document.getElementById('setQris').value,
-                banks: banksArr
+                storeName: document.getElementById('setStoreName').value, storeLogo: document.getElementById('setStoreLogo').value,
+                waAdmin: waRaw ? "62" + waRaw : "", qrisImage: document.getElementById('setQris').value, banks: banksArr
             };
 
             try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    redirect: 'follow', 
-                    body: JSON.stringify({ action: 'saveSettings', payload: payload })
-                });
-                const textResp = await response.text();
-                if(textResp.trim().startsWith('<')) throw new Error("Format HTML terdeteksi");
-                const result = JSON.parse(textResp);
-                
-                if(result.status === 'success') {
-                    showToast("Pengaturan berhasil disimpan!", "success");
-                    fetchStoreSettings(true); // Update brand UI
-                } else { showToast("Gagal: " + result.message, "error"); }
-            } catch (error) {
-                showToast("Gagal menyimpan ke server.", "error");
-            } finally { hideLoading(); }
+                const result = await callAPI('saveSettings', payload);
+                if(result.status === 'success') { showToast("Tersimpan!", "success"); fetchStoreSettings(true); } 
+                else showToast("Gagal: " + result.message, "error");
+            } catch (error) { showToast("Gagal menyimpan ke server.", "error"); } finally { hideLoading(); }
         }
 
         function setupChart() {
             const ctx = document.getElementById('transactionChart').getContext('2d');
             if(window.myChart) return;
             let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');   
-            gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)'); gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
             window.myChart = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-                    datasets: [{
-                        label: 'Klik Link', data: [12, 19, 15, 25, 22, 30, 28],
-                        borderColor: '#3b82f6', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4
-                    }]
-                },
+                data: { labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'], datasets: [{ label: 'Klik Link', data: [12, 19, 15, 25, 22, 30, 28], borderColor: '#3b82f6', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
-        window.addEventListener('DOMContentLoaded', () => { checkLoginState(); });
+        window.addEventListener('DOMContentLoaded', () => checkLoginState());
     </script>
 </body>
 </html>
