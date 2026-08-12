@@ -909,7 +909,11 @@
                         const set = result.settings;
                         document.getElementById('setStoreName').value = set.storeName || "";
                         document.getElementById('setStoreLogo').value = set.storeLogo || "";
-                        document.getElementById('setWa').value = (set.waAdmin||"").startsWith('62') ? set.waAdmin.substring(2) : set.waAdmin;
+                        
+                        // FIX: Pastikan waAdmin diubah jadi String dulu biar gak error is not a function
+                        const waStr = String(set.waAdmin || "");
+                        document.getElementById('setWa').value = waStr.startsWith('62') ? waStr.substring(2) : waStr;
+                        
                         document.getElementById('setQris').value = set.qrisImage || "";
                         document.getElementById('bankList').innerHTML = '';
                         if (set.banks && set.banks.length > 0) set.banks.forEach(b => addBankField(b.bank, b.rek, b.owner));
