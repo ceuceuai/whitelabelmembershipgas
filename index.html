@@ -497,19 +497,20 @@
          * Dilengkapi Timeout 20 Detik & Force Error Handling
          */
         async function callAPI(action, payload = {}) {
-            // Kita tambah batesan waktu jadi 20 detik untuk jaga-jaga koneksi lambat
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 20000); 
 
             try {
+                // HAPUS headers Content-Type biar browser ngatur sendiri (text/plain) 
+                // dan tambahin redirect: 'follow' biar gak nyasar jadi GET
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Wajib text/plain biar tembus preflight CORS Vercel
+                    redirect: 'follow',
                     body: JSON.stringify({ action: action, payload: payload }),
                     signal: controller.signal
                 });
                 
-                clearTimeout(timeoutId); // Sukses nerima data, batalin timer
+                clearTimeout(timeoutId); 
                 
                 if (!response.ok) {
                      throw new Error(`HTTP error! status: ${response.status}`);
@@ -517,7 +518,12 @@
                 
                 const text = await response.text();
                 
-                // Cek kalau ternyata Google ngasih respon halaman HTML Error (biasanya kalau setting deployment salah)
+                // Cek kalau ternyata masih nyasar ke doGet karena redirect browser
+                if (text.includes("Gunakan POST") || text.startsWith("API ")) {
+                    throw new Error("Koneksi diblokir oleh browser. Coba refresh atau gunakan mode Incognito.");
+                }
+                
+                // Cek kalau ternyata Google ngasih respon halaman HTML Error
                 if (text.trim().startsWith('<')) {
                     console.error("Respon Google Error/Terblokir:", text);
                     throw new Error("API Terblokir. Pastikan akses Google Script di-set ke 'Anyone'!");
@@ -526,13 +532,11 @@
                 return JSON.parse(text);
                 
             } catch (error) {
-                clearTimeout(timeoutId); // Jaga-jaga bersihin timer kalau error
+                clearTimeout(timeoutId); 
                 
-                // Kalau error karena timer habis
                 if (error.name === 'AbortError') {
                     throw new Error("Koneksi ke database terlalu lambat (Timeout). Coba lagi.");
                 }
-                // Kalau error lain (Network drop, salah URL, dll)
                 throw new Error(error.message || "Gagal menghubungi server database.");
             }
         }
