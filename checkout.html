@@ -44,7 +44,7 @@
     <!-- Global Loading -->
     <div id="loadingOverlay">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-500 mb-3"></i>
-        <p class="text-sm font-medium text-gray-600">Memuat informasi toko...</p>
+        <p id="loadingText" class="text-sm font-medium text-gray-600 mt-2">Menyiapkan halaman checkout...</p>
     </div>
 
     <!-- Toast Notification -->
@@ -68,25 +68,11 @@
         <div class="p-8">
             <form id="checkoutForm" onsubmit="processCheckout(event)">
                 
-                <!-- Product Selection -->
+                <!-- Product Selection Dinamis -->
                 <div class="mb-6">
                     <label class="block text-sm font-bold text-gray-700 mb-3">Pilih Produk</label>
-                    <div class="space-y-3">
-                        <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all">
-                            <div class="flex items-center">
-                                <input type="radio" name="product" value="Bundle Template Promosi|150000" class="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300" required>
-                                <span class="ml-3 font-semibold text-gray-800">Bundle Template Promosi</span>
-                            </div>
-                            <span class="font-bold text-blue-600">Rp 150.000</span>
-                        </label>
-                        
-                        <label class="flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all">
-                            <div class="flex items-center">
-                                <input type="radio" name="product" value="Masterclass Affiliate|350000" class="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300">
-                                <span class="ml-3 font-semibold text-gray-800">Masterclass Affiliate</span>
-                            </div>
-                            <span class="font-bold text-blue-600">Rp 350.000</span>
-                        </label>
+                    <div id="productList" class="space-y-3">
+                        <!-- Daftar Produk dari API akan dimuat disini -->
                     </div>
                 </div>
 
@@ -100,7 +86,7 @@
                 <input type="hidden" id="affiliateCode" value="">
 
                 <!-- Submit Button -->
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-blue-500/30 text-lg flex justify-center items-center">
+                <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-blue-500/30 text-lg flex justify-center items-center">
                     <i class="fa-solid fa-lock mr-2"></i> Bayar Sekarang
                 </button>
             </form>
@@ -152,16 +138,31 @@
     </div>
 
     <script>
-        // MASUKIN URL WEB APP GAS LO DI SINI
+        // API URL DARI GOOGLE SCRIPT (Pastikan sama dengan di index.html)
         const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec";
 
         let storeSettings = {
-            storeName: "Whitelabel Membership",
-            storeLogo: "",
-            waAdmin: "6281234567890",
-            qrisImage: "",
-            banks: []
+            storeName: "Whitelabel Membership", storeLogo: "", waAdmin: "6281234567890", qrisImage: "", banks: []
         };
+
+        // Fungsi fetch tangguh seperti di dashboard
+        async function callAPI(action, payload = {}) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 20000); 
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST', redirect: 'follow', body: JSON.stringify({ action: action, payload: payload }), signal: controller.signal
+                });
+                clearTimeout(timeoutId); 
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const text = await response.text();
+                if (text.includes("Gunakan POST") || text.trim().startsWith('<')) throw new Error("Terblokir oleh Google. Gagal memuat data.");
+                return JSON.parse(text);
+            } catch (error) {
+                clearTimeout(timeoutId); 
+                throw new Error(error.name === 'AbortError' ? "Koneksi lambat (Timeout)." : "Gagal terhubung ke server.");
+            }
+        }
 
         function showToast(message, type) {
             const toast = document.getElementById('toast');
@@ -170,11 +171,13 @@
             setTimeout(() => { toast.classList.remove('show'); }, 4000);
         }
 
-        // Ambil konfigurasi toko dari Google Sheets pas halaman dibuka
+        function formatRupiah(nom) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(nom || 0); }
+
+        // MENGAMBIL DATA SETTINGS DAN PRODUK SAAT LOAD
         window.addEventListener('DOMContentLoaded', async () => {
-            // Nangkep Affiliate Link
             const urlParams = new URLSearchParams(window.location.search);
             const affCode = urlParams.get('aff');
+            const targetProd = urlParams.get('prod'); // Nangkep parameter ?prod=PROD-XXX
             
             if (affCode) {
                 document.getElementById('affiliateCode').value = affCode;
@@ -182,44 +185,75 @@
             }
 
             try {
-                const response = await fetch(API_URL + "?action=getSettings", {
-                    method: 'GET',
-                    redirect: 'follow'
-                });
-                const textResponse = await response.text();
-                
-                if (!textResponse.trim().startsWith('<')) {
-                    const result = JSON.parse(textResponse);
-                    if (result.status === 'success' && result.settings) {
-                        storeSettings = result.settings;
-                        
-                        // Update UI Brand secara dinamis
-                        if(storeSettings.storeName) {
-                            document.title = `Checkout | ${storeSettings.storeName}`;
-                            document.getElementById('checkoutBrandName').innerText = `Pesanan ${storeSettings.storeName}`;
-                        }
-                        
-                        if(storeSettings.storeLogo && storeSettings.storeLogo.startsWith('http')) {
-                            document.getElementById('checkoutBrandLogo').innerHTML = `<img src="${storeSettings.storeLogo}" class="w-full h-full object-cover" alt="Logo">`;
-                            document.getElementById('checkoutBrandLogo').classList.remove('bg-white/20', 'p-4');
-                        }
+                // 1. Ambil Settings Toko
+                const setRes = await callAPI('getSettings');
+                if (setRes.status === 'success' && setRes.settings) {
+                    storeSettings = setRes.settings;
+                    if(storeSettings.storeName) {
+                        document.title = `Checkout | ${storeSettings.storeName}`;
+                        document.getElementById('checkoutBrandName').innerText = `Pesanan ${storeSettings.storeName}`;
+                    }
+                    if(storeSettings.storeLogo && storeSettings.storeLogo.startsWith('http')) {
+                        document.getElementById('checkoutBrandLogo').innerHTML = `<img src="${storeSettings.storeLogo}" class="w-full h-full object-cover" alt="Logo">`;
+                        document.getElementById('checkoutBrandLogo').classList.remove('bg-white/20', 'p-4');
                     }
                 }
+
+                // 2. Ambil Daftar Produk
+                document.getElementById('loadingText').innerText = "Memuat katalog produk...";
+                const prodRes = await callAPI('getProducts');
+                const prodContainer = document.getElementById('productList');
+                
+                if(prodRes.status === 'success' && prodRes.data && prodRes.data.length > 0) {
+                    prodContainer.innerHTML = '';
+                    let hasChecked = false;
+
+                    prodRes.data.forEach((p, index) => {
+                        // Cek apakah produk ini yg dimau dari URL, atau defaultnya pilih yang pertama
+                        const isChecked = (targetProd === p['Product_ID']) || (!targetProd && index === 0);
+                        if(isChecked) hasChecked = true;
+
+                        prodContainer.innerHTML += `
+                            <label class="flex items-center justify-between p-4 border ${isChecked ? 'border-blue-500 bg-blue-50' : 'border-gray-200'} rounded-xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all product-label">
+                                <div class="flex items-center">
+                                    <input type="radio" name="product" value="${p['Nama_Produk']}|${p['Harga']}" class="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300" ${isChecked ? 'checked' : ''} onchange="updateRadioStyles()">
+                                    <div class="ml-3">
+                                        <span class="block font-semibold text-gray-800">${p['Nama_Produk']}</span>
+                                        <span class="text-xs text-gray-500">${p['Product_ID']}</span>
+                                    </div>
+                                </div>
+                                <span class="font-bold text-blue-600">${formatRupiah(p['Harga'])}</span>
+                            </label>
+                        `;
+                    });
+                } else {
+                    prodContainer.innerHTML = `<div class="p-4 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100">Belum ada produk yang aktif.</div>`;
+                    document.getElementById('btnSubmit').disabled = true;
+                    document.getElementById('btnSubmit').classList.add('opacity-50', 'cursor-not-allowed');
+                }
+
             } catch (e) {
-                console.warn("Gagal memuat pengaturan toko dinamis, pakai default:", e);
+                showToast("Gagal memuat data dari server.", "error");
             } finally {
-                // Matiin loading apapun yang terjadi
                 const overlay = document.getElementById('loadingOverlay');
                 overlay.style.opacity = '0';
                 setTimeout(() => { overlay.style.display = 'none'; }, 300);
             }
         });
 
+        // Efek visual klik radio button
+        function updateRadioStyles() {
+            document.querySelectorAll('.product-label').forEach(lbl => {
+                if(lbl.querySelector('input').checked) lbl.classList.add('border-blue-500', 'bg-blue-50');
+                else lbl.classList.remove('border-blue-500', 'bg-blue-50');
+            });
+        }
+
         async function processCheckout(e) {
             e.preventDefault();
             
             const overlay = document.getElementById('loadingOverlay');
-            overlay.querySelector('p').innerText = "Memproses pesanan...";
+            document.getElementById('loadingText').innerText = "Memproses pesanan...";
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 10);
 
@@ -231,67 +265,26 @@
             const productName = productSplit[0];
             const productPrice = parseInt(productSplit[1]);
 
-            const payload = {
-                email: email,
-                produk: productName,
-                total_bayar: productPrice,
-                affCode: affCode
-            };
+            const payload = { email: email, produk: productName, total_bayar: productPrice, affCode: affCode };
 
             try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    redirect: 'follow', 
-                    body: JSON.stringify({ action: 'checkout', payload: payload })
-                });
-                
-                const textResponse = await response.text();
-                
-                // Tutup loading screen
-                overlay.style.opacity = '0';
-                setTimeout(() => { overlay.style.display = 'none'; }, 300);
-
-                if (textResponse.trim().startsWith('<')) {
-                    throw new Error("Received HTML error / Redirect from Google");
-                }
-                
-                const result = JSON.parse(textResponse);
-                
+                const result = await callAPI('checkout', payload);
                 if (result.status === 'success') {
                     document.getElementById('checkoutForm').style.display = 'none';
                     tampilkanInstruksiPembayaran(productPrice);
                     showToast("Pesanan dicatat! Silakan transfer.", "success");
-                } else {
-                    showToast(result.message || "Gagal memproses pesanan", "error");
-                }
-                
+                } else showToast(result.message || "Gagal memproses pesanan", "error");
             } catch (error) {
-                // Fallback Mode CORS Ketat Vercel
-                fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({ action: 'checkout', payload: payload })
-                }).then(() => {
-                    overlay.style.opacity = '0';
-                    setTimeout(() => { overlay.style.display = 'none'; }, 300);
-                    
-                    document.getElementById('checkoutForm').style.display = 'none';
-                    tampilkanInstruksiPembayaran(productPrice);
-                    showToast("Pesanan dicatat! Silakan transfer.", "success");
-                }).catch(e => {
-                    overlay.style.opacity = '0';
-                    setTimeout(() => { overlay.style.display = 'none'; }, 300);
-                    showToast("Gagal menyambung ke server database.", "error");
-                });
+                showToast(error.message, "error");
+            } finally {
+                overlay.style.opacity = '0';
+                setTimeout(() => { overlay.style.display = 'none'; }, 300);
             }
         }
 
         function tampilkanInstruksiPembayaran(nominal) {
-            // Format Rupiah
-            const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
-            document.getElementById('paymentAmount').innerText = formatter.format(nominal);
+            document.getElementById('paymentAmount').innerText = formatRupiah(nominal);
             
-            // Generate Rekening Dinamis dari Database
             const bankContainer = document.getElementById('bankListContainer');
             bankContainer.innerHTML = '';
             
@@ -313,12 +306,8 @@
                 bankContainer.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">Belum ada rekening yang diatur admin.</p>`;
             }
 
-            // Tampilkan QRIS kalau ada URL-nya
-            if(storeSettings.qrisImage && storeSettings.qrisImage.startsWith('http')) {
-                document.getElementById('qrisImage').src = storeSettings.qrisImage;
-            } else {
-                document.getElementById('qrisImage').parentElement.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">QRIS tidak tersedia.</p>`;
-            }
+            if(storeSettings.qrisImage && storeSettings.qrisImage.startsWith('http')) document.getElementById('qrisImage').src = storeSettings.qrisImage;
+            else document.getElementById('qrisImage').parentElement.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">QRIS tidak tersedia.</p>`;
 
             document.getElementById('paymentScreen').style.display = 'block';
         }
@@ -335,7 +324,8 @@
 
         function confirmPaymentWA() {
             const email = document.getElementById('customerEmail').value;
-            const waNumber = storeSettings.waAdmin || "6281234567890";
+            const waRaw = String(storeSettings.waAdmin || "");
+            const waNumber = waRaw.startsWith('62') ? waRaw : (waRaw.startsWith('0') ? '62' + waRaw.substring(1) : '62' + waRaw);
             const text = `Halo Admin, saya mau konfirmasi pembayaran Whitelabel.\n\nEmail Pemesan: ${email}\nStatus: Sudah Transfer (Mohon dicek mutasinya)`;
             window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
         }
