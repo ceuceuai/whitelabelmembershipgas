@@ -253,9 +253,9 @@
         </div>
     </div>
 
-    <div id="dashboardView" class="h-full w-full flex" style="display: none;">
-        <aside class="w-64 bg-sidebar text-gray-300 flex flex-col h-full hidden md:flex flex-shrink-0 relative z-20">
-            <div class="h-20 flex items-center px-6 border-b border-gray-800">
+    <div id="dashboardView" class="h-full w-full flex overflow-hidden" style="display: none;">
+        <aside class="w-64 bg-sidebar text-gray-300 flex-col h-full hidden md:flex flex-shrink-0 relative z-30 shadow-xl">
+            <div class="h-20 flex items-center px-6 border-b border-gray-800 flex-shrink-0">
                 <div id="sidebarBrandLogo" class="w-10 h-10 bg-brandblue rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30 mr-3 overflow-hidden">
                     <i class="fa-solid fa-cube text-xl"></i>
                 </div>
@@ -317,22 +317,22 @@
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col h-full overflow-hidden bg-gray-50 relative z-10">
-            <header class="h-20 bg-white/80 backdrop-blur-md px-8 flex items-center justify-between border-b border-gray-100 flex-shrink-0 sticky top-0 z-10">
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-gray-50 relative z-10 w-full">
+            <header class="h-20 bg-white/80 backdrop-blur-md px-8 flex items-center justify-between border-b border-gray-100 flex-shrink-0 sticky top-0 z-20 shadow-sm">
                 <div><h2 class="text-xl font-bold text-gray-800" id="headerTitle">Dashboard</h2></div>
                 <div class="flex items-center space-x-4">
                     <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold shadow-sm" id="headerUserInisial">U</div>
                 </div>
             </header>
 
-            <div class="flex-1 overflow-y-auto p-8 relative">
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 relative w-full">
                 
                 <!-- TAB DASHBOARD -->
-                <div id="tab-dashboard" class="tab-content active space-y-6">
-                    <div class="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg flex items-center justify-between relative overflow-hidden">
+                <div id="tab-dashboard" class="tab-content active space-y-6 w-full">
+                    <div class="bg-indigo-600 rounded-2xl p-6 md:p-8 text-white shadow-lg flex items-center justify-between relative overflow-hidden min-h-[140px]">
                         <div class="relative z-10">
-                            <h2 class="text-2xl font-bold mb-1">Halo, <span id="welcomeName">Member</span>! 👋</h2>
-                            <p class="text-indigo-100 text-sm">Pantau aktivitas dan perkembangan Anda hari ini.</p>
+                            <h2 class="text-2xl md:text-3xl font-bold mb-2">Halo, <span id="welcomeName">Member</span>! 👋</h2>
+                            <p class="text-indigo-100 text-sm md:text-base">Pantau aktivitas dan perkembangan Anda hari ini.</p>
                         </div>
                         <div class="absolute -right-10 -bottom-20 opacity-30 text-9xl"><i class="fa-solid fa-chart-line"></i></div>
                     </div>
@@ -380,27 +380,27 @@
                         </div>
                         <div class="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Komisi</p>
-                            <h3 id="memStatTotal" class="text-3xl font-extrabold mb-1">Rp 0</h3>
+                            <h3 id="memStatTotal" class="text-3xl font-extrabold mb-1 truncate">Rp 0</h3>
                             <div class="card-decoration"></div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
                         <!-- CHART ADMIN ONLY -->
-                        <div class="admin-only lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100" style="display:none;">
-                            <h3 class="text-lg font-bold text-gray-800 mb-6">Grafik Aktivitas</h3>
-                            <div class="relative h-64 w-full"><canvas id="transactionChart"></canvas></div>
+                        <div class="admin-only lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col" style="display:none;">
+                            <h3 class="text-lg font-bold text-gray-800 mb-6 flex-shrink-0">Grafik Aktivitas</h3>
+                            <div class="relative w-full flex-1 min-h-[250px]"><canvas id="transactionChart"></canvas></div>
                         </div>
                         
                         <!-- AFFILIATE LINK (GLOBAL) -->
                         <div class="flex flex-col gap-6 lg:col-span-1">
-                            <div class="bg-white rounded-2xl p-6 shadow-sm border border-blue-100">
+                            <div class="bg-white rounded-2xl p-6 shadow-sm border border-blue-100 h-full flex flex-col">
                                 <h3 class="text-base font-bold text-gray-800 mb-2"><i class="fa-solid fa-link text-blue-500 mr-2"></i> Link Affiliate Anda</h3>
-                                <p class="text-xs text-gray-500 mb-4">Sebarkan link ini, dapatkan komisi tambahan untuk setiap penjualan sukses!</p>
-                                <div class="relative mb-2">
-                                    <input type="text" id="affLink" value="..." readonly class="w-full bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-lg px-4 py-3 outline-none">
+                                <p class="text-xs text-gray-500 mb-4 flex-1">Sebarkan link ini, dapatkan komisi tambahan untuk setiap penjualan sukses!</p>
+                                <div class="relative mb-3 w-full">
+                                    <input type="text" id="affLink" value="..." readonly class="w-full bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-lg px-4 py-3 outline-none overflow-hidden text-ellipsis whitespace-nowrap">
                                 </div>
-                                <button onclick="copyAffiliateLink(this)" class="w-full bg-gray-900 hover:bg-blue-600 text-white font-medium rounded-lg text-sm px-5 py-3 transition-colors flex justify-center items-center">
+                                <button onclick="copyAffiliateLink(this)" class="w-full bg-gray-900 hover:bg-blue-600 text-white font-medium rounded-lg text-sm px-5 py-3 transition-colors flex justify-center items-center mt-auto">
                                     <i class="fa-regular fa-copy mr-2"></i> Salin Link
                                 </button>
                             </div>
