@@ -72,17 +72,33 @@
                 
                 <!-- Product Selection Dinamis -->
                 <div class="mb-6">
-                    <label id="productSectionTitle" class="block text-sm font-bold text-gray-700 mb-3">Pilih Produk</label>
+                    <label id="productSectionTitle" class="block text-sm font-bold text-gray-700 mb-3" style="display: none;">Pilih Produk</label>
                     <div id="productList" class="space-y-4">
                         <!-- Daftar Produk dari API akan dimuat disini -->
                     </div>
                 </div>
 
                 <!-- Customer Details -->
-                <div class="mb-8 border-t border-gray-100 pt-6">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Alamat Email Pengiriman</label>
-                    <input type="email" id="customerEmail" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="email.anda@gmail.com">
-                    <p class="text-xs text-gray-500 mt-2"><i class="fa-solid fa-shield-halved mr-1"></i> File akses / link materi akan dikirimkan ke email ini.</p>
+                <div class="mb-8 border-t border-gray-100 pt-6 space-y-4" id="formFieldsContainer">
+                    
+                    <!-- Field Nama (Dinamis) -->
+                    <div id="fieldNamaWrapper" style="display: none;">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap <span id="labelNamaReq" class="text-red-500">*</span></label>
+                        <input type="text" id="customerName" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="Nama Anda">
+                    </div>
+                    
+                    <!-- Field WhatsApp (Dinamis) -->
+                    <div id="fieldWaWrapper" style="display: none;">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Nomor WhatsApp <span id="labelWaReq" class="text-red-500">*</span></label>
+                        <input type="number" id="customerWa" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="081234567890">
+                    </div>
+
+                    <!-- Field Email (Selalu Wajib) -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Alamat Email Pengiriman <span class="text-red-500">*</span></label>
+                        <input type="email" id="customerEmail" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="email.anda@gmail.com">
+                        <p class="text-xs text-gray-500 mt-2"><i class="fa-solid fa-shield-halved mr-1"></i> Produk akan dikirimkan ke email ini.</p>
+                    </div>
                 </div>
 
                 <input type="hidden" id="affiliateCode" value="">
@@ -120,7 +136,7 @@
                         <div class="bg-gray-50 px-4 py-3 font-bold text-gray-700 border-b border-gray-200 flex items-center">
                             <i class="fa-solid fa-qrcode text-blue-500 mr-2"></i> QRIS Statis (Semua E-Wallet)
                         </div>
-                        <div class="p-6 bg-white flex flex-col items-center">
+                        <div class="p-6 bg-white flex flex-col items-center" id="qrisContainer">
                             <img id="qrisImage" src="" alt="QRIS" class="max-w-[200px] rounded-lg shadow-sm border border-gray-100 mb-3" onerror="this.style.display='none'">
                             <p class="text-xs text-gray-500 text-center mt-2">Scan pakai BCA, Mandiri, GoPay, OVO, Dana, dll.</p>
                         </div>
@@ -140,11 +156,12 @@
     </div>
 
     <script>
-        // PASTIIN URL API INI SAMA DENGAN YANG DI INDEX.HTML YA BRO!
+        // MASUKIN URL WEB APP GAS LO DI SINI! (PASTIKAN SUDAH NEW DEPLOYMENT JIKA ADA PERUBAHAN CODE.GS)
         const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec";
 
         let storeSettings = {
-            storeName: "Whitelabel Membership", storeLogo: "", waAdmin: "6281234567890", qrisImage: "", banks: []
+            storeName: "Whitelabel Membership", storeLogo: "", waAdmin: "6281234567890", qrisImage: "", banks: [],
+            formName: "required", formWa: "optional" // Nilai bawaan
         };
 
         // Mesin API Tahan Banting pakai POST
@@ -158,7 +175,6 @@
                     body: JSON.stringify({ action: action, payload: payload }),
                     signal: controller.signal
                 });
-                
                 clearTimeout(timeoutId); 
                 
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -198,7 +214,8 @@
                 // 1. Ambil Settings Toko
                 const setRes = await callAPI('getSettings');
                 if (setRes.status === 'success' && setRes.settings) {
-                    storeSettings = setRes.settings;
+                    storeSettings = Object.assign(storeSettings, setRes.settings); // Gabungin setingan baru
+                    
                     if(storeSettings.storeName) {
                         document.title = `Checkout | ${storeSettings.storeName}`;
                         document.getElementById('checkoutBrandName').innerText = `Pesanan ${storeSettings.storeName}`;
@@ -207,27 +224,65 @@
                         document.getElementById('checkoutBrandLogo').innerHTML = `<img src="${storeSettings.storeLogo}" class="w-full h-full object-cover" alt="Logo">`;
                         document.getElementById('checkoutBrandLogo').classList.remove('bg-white/20', 'p-4');
                     }
+                    
+                    // --- MENGATUR FORM DINAMIS (NAMA & WA) ---
+                    const formNameSet = storeSettings.formName || 'required';
+                    const formWaSet = storeSettings.formWa || 'optional';
+
+                    const nameWrapper = document.getElementById('fieldNamaWrapper');
+                    const nameInput = document.getElementById('customerName');
+                    const nameReq = document.getElementById('labelNamaReq');
+                    
+                    if (formNameSet !== 'hidden') {
+                        nameWrapper.style.display = 'block';
+                        if (formNameSet === 'required') {
+                            nameInput.required = true;
+                            nameReq.style.display = 'inline';
+                        } else {
+                            nameInput.required = false;
+                            nameReq.style.display = 'none';
+                        }
+                    }
+
+                    const waWrapper = document.getElementById('fieldWaWrapper');
+                    const waInput = document.getElementById('customerWa');
+                    const waReq = document.getElementById('labelWaReq');
+
+                    if (formWaSet !== 'hidden') {
+                        waWrapper.style.display = 'block';
+                        if (formWaSet === 'required') {
+                            waInput.required = true;
+                            waReq.style.display = 'inline';
+                        } else {
+                            waInput.required = false;
+                            waReq.style.display = 'none';
+                        }
+                    }
                 }
 
                 // 2. Ambil Daftar Produk
                 document.getElementById('loadingText').innerText = "Memuat detail produk...";
                 const prodRes = await callAPI('getProducts');
                 const prodContainer = document.getElementById('productList');
+                const sectionTitle = document.getElementById('productSectionTitle');
                 
                 if(prodRes.status === 'success' && prodRes.data && prodRes.data.length > 0) {
                     prodContainer.innerHTML = '';
                     
-                    // Filter produk kalau ada parameter ?prod= di URL
                     let productsToShow = prodRes.data;
+                    
+                    // Kalau ada param ?prod di URL, HANYA TAMPILKAN 1 PRODUK ITU!
                     if (targetProd) {
                         const filtered = productsToShow.filter(p => p['Product_ID'] === targetProd);
                         if (filtered.length > 0) {
                             productsToShow = filtered;
-                            // Ubah label karena cuma nampilin 1 produk
-                            document.getElementById('productSectionTitle').innerText = "Detail Produk yang Anda Beli";
+                            sectionTitle.style.display = 'none'; // Sembunyiin teks "Pilih Produk" karena cuma 1
                         } else {
-                            showToast("Produk tidak ditemukan, menampilkan semua produk.", "error");
+                            showToast("Produk tidak ditemukan, menampilkan semua katalog.", "error");
+                            sectionTitle.style.display = 'block';
                         }
+                    } else {
+                        sectionTitle.style.display = 'block'; // Tampilkan buat milih
                     }
 
                     // Render produk ke HTML
@@ -235,7 +290,6 @@
                         const isChecked = productsToShow.length === 1 || index === 0;
                         const imgUrl = p['Image_URL'] || 'https://placehold.co/100x100/eeeeee/999999?text=No+Image';
                         
-                        // Sembunyiin bulatan radio button kalo cuma 1 produk biar UI-nya bersih
                         const radioClass = productsToShow.length === 1 ? 'hidden' : 'w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300';
                         const labelClass = isChecked ? 'border-blue-500 bg-blue-50' : 'border-gray-200';
 
@@ -285,11 +339,19 @@
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 10);
 
+            // Nangkep Data Dinamis
             const email = document.getElementById('customerEmail').value;
+            const namaEl = document.getElementById('customerName');
+            const waEl = document.getElementById('customerWa');
+            
+            const namaVal = namaEl && namaEl.value ? namaEl.value : '';
+            const waVal = waEl && waEl.value ? waEl.value : '';
+
             const productElement = document.querySelector('input[name="product"]:checked');
             
             if(!productElement) {
-                hideLoading();
+                overlay.style.opacity = '0';
+                setTimeout(() => { overlay.style.display = 'none'; }, 300);
                 return showToast("Silakan pilih produk terlebih dahulu.", "error");
             }
             
@@ -300,7 +362,15 @@
             const productName = productSplit[0];
             const productPrice = parseInt(productSplit[1]);
 
-            const payload = { email: email, produk: productName, total_bayar: productPrice, affCode: affCode };
+            // PAYLOAD BARU dengan Nama & WA
+            const payload = { 
+                email: email, 
+                nama: namaVal,
+                wa: waVal,
+                produk: productName, 
+                total_bayar: productPrice, 
+                affCode: affCode 
+            };
 
             try {
                 const result = await callAPI('checkout', payload);
@@ -341,10 +411,16 @@
                 bankContainer.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">Belum ada rekening yang diatur admin.</p>`;
             }
 
+            // PERBAIKAN QRIS: Paksa munculin gambar!
+            const qrisImg = document.getElementById('qrisImage');
+            const qrisContainer = document.getElementById('qrisContainer');
+            
             if(storeSettings.qrisImage && storeSettings.qrisImage.startsWith('http')) {
-                document.getElementById('qrisImage').src = storeSettings.qrisImage;
+                // Paksa munculin gambar, hapus display: none hasil dari onerror kalau ada
+                qrisImg.style.display = 'block'; 
+                qrisImg.src = storeSettings.qrisImage;
             } else {
-                document.getElementById('qrisImage').parentElement.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">QRIS tidak tersedia.</p>`;
+                qrisContainer.innerHTML = `<p class="text-xs text-gray-500 text-center py-2">QRIS tidak tersedia.</p>`;
             }
 
             document.getElementById('paymentScreen').style.display = 'block';
@@ -362,12 +438,16 @@
 
         function confirmPaymentWA() {
             const email = document.getElementById('customerEmail').value;
+            const namaEl = document.getElementById('customerName');
+            const nama = namaEl && namaEl.value !== "" ? namaEl.value : 'Hamba Allah';
+            
             const waRaw = String(storeSettings.waAdmin || "");
             const waNumber = waRaw.startsWith('62') ? waRaw : (waRaw.startsWith('0') ? '62' + waRaw.substring(1) : '62' + waRaw);
+            
             const productElement = document.querySelector('input[name="product"]:checked');
             const productName = productElement ? productElement.value.split('|')[0] : 'Produk Digital';
             
-            const text = `Halo Admin, saya mau konfirmasi pembayaran.\n\nProduk: ${productName}\nEmail Pemesan: ${email}\nStatus: Sudah Transfer (Mohon dicek mutasinya)`;
+            const text = `Halo Admin, saya mau konfirmasi pembayaran.\n\nProduk: ${productName}\nNama Pembeli: ${nama}\nEmail: ${email}\n\nStatus: Sudah Transfer (Mohon dicek mutasinya)`;
             window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
