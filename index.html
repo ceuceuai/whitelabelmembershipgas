@@ -90,6 +90,7 @@
 
     <div id="toast" class="toast-msg">Pesan disini</div>
 
+    <!-- MODAL TAMBAH PRODUK -->
     <div id="modalAddProduct" class="modal-overlay">
         <div class="modal-content relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeModal('modalAddProduct')" class="absolute top-6 right-6 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -135,6 +136,7 @@
         </div>
     </div>
 
+    <!-- MODAL TAMBAH MEMBER -->
     <div id="modalAddMember" class="modal-overlay">
         <div class="modal-content relative">
             <button onclick="closeModal('modalAddMember')" class="absolute top-6 right-6 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -168,6 +170,7 @@
         </div>
     </div>
 
+    <!-- MODAL GANTI PASSWORD -->
     <div id="modalChangePassword" class="modal-overlay">
         <div class="modal-content relative">
             <button onclick="closeModal('modalChangePassword')" class="absolute top-6 right-6 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -265,34 +268,31 @@
                 </div>
             </div>
 
+            <!-- GAK PAKE STYLE="DISPLAY:NONE" LAGI, MURNI PAKE KELAS 'HIDDEN' -->
             <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
                 <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all nav-item">
                     <i class="fa-solid fa-border-all w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Dashboard</span>
                 </a>
                 
-                <!-- MENU MEMBER ONLY -->
-                <a href="#" onclick="switchTab('my-products')" id="nav-my-products" class="member-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item" style="display:none;">
+                <a href="#" onclick="switchTab('my-products')" id="nav-my-products" class="member-only hidden items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-box-open w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Produk Saya</span>
                 </a>
 
-                <!-- MENU ADMIN ONLY -->
-                <a href="#" onclick="switchTab('member')" id="nav-member" class="admin-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item" style="display:none;">
+                <a href="#" onclick="switchTab('member')" id="nav-member" class="admin-only hidden items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-users w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Member</span>
                 </a>
-                <a href="#" onclick="switchTab('produk')" id="nav-produk" class="admin-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item" style="display:none;">
+                <a href="#" onclick="switchTab('produk')" id="nav-produk" class="admin-only hidden items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-box w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Produk</span>
                 </a>
-                <a href="#" onclick="switchTab('transaksi')" id="nav-transaksi" class="admin-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item" style="display:none;">
+                <a href="#" onclick="switchTab('transaksi')" id="nav-transaksi" class="admin-only hidden items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-wallet w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Transaksi</span>
                 </a>
                 
-                <!-- MENU GLOBAL -->
                 <a href="#" onclick="switchTab('affiliate')" id="nav-affiliate" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-handshake w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Affiliate</span>
                 </a>
 
-                <!-- MENU ADMIN ONLY -->
-                <a href="#" onclick="switchTab('settings')" id="nav-settings" class="admin-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item mt-4" style="display:none;">
+                <a href="#" onclick="switchTab('settings')" id="nav-settings" class="admin-only hidden items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item mt-4">
                     <i class="fa-solid fa-gear w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Pengaturan</span>
                 </a>
             </div>
@@ -306,7 +306,6 @@
                     </div>
                 </div>
                 
-                <!-- TOMBOL GANTI PASSWORD -->
                 <button onclick="openModal('modalChangePassword')" class="mt-5 flex items-center text-gray-400 hover:text-white text-sm font-medium px-2 py-1 w-full text-left transition-colors">
                     <i class="fa-solid fa-key mr-2"></i> Ganti Password
                 </button>
@@ -318,7 +317,7 @@
         </aside>
 
         <main class="flex-1 flex flex-col h-full overflow-hidden bg-gray-50 relative z-10 w-full">
-            <header class="h-20 bg-white/80 backdrop-blur-md px-8 flex items-center justify-between border-b border-gray-100 flex-shrink-0 sticky top-0 z-20 shadow-sm">
+            <header class="h-20 bg-white/80 backdrop-blur-md px-8 flex items-center justify-between border-b border-gray-100 flex-shrink-0 sticky top-0 z-20 shadow-sm w-full">
                 <div><h2 class="text-xl font-bold text-gray-800" id="headerTitle">Dashboard</h2></div>
                 <div class="flex items-center space-x-4">
                     <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold shadow-sm" id="headerUserInisial">U</div>
@@ -337,8 +336,8 @@
                         <div class="absolute -right-10 -bottom-20 opacity-30 text-9xl"><i class="fa-solid fa-chart-line"></i></div>
                     </div>
 
-                    <!-- ADMIN STATS -->
-                    <div id="adminStatsArea" class="admin-only grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display: none;">
+                    <!-- ADMIN STATS (PAKE GRID & HIDDEN CLASS, BUKAN DISPLAY NONE) -->
+                    <div id="adminStatsArea" class="admin-only hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
                         <div class="bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Member</p>
                             <h3 id="statTotalMember" class="text-3xl font-extrabold mb-1">0</h3>
@@ -362,7 +361,7 @@
                     </div>
 
                     <!-- MEMBER STATS -->
-                    <div id="memberStatsArea" class="member-only grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display: none;">
+                    <div id="memberStatsArea" class="member-only hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
                         <div class="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Referral (Lead)</p>
                             <h3 id="memStatReferral" class="text-3xl font-extrabold mb-1">0</h3>
@@ -387,7 +386,7 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
                         <!-- CHART ADMIN ONLY -->
-                        <div class="admin-only lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col" style="display:none;">
+                        <div class="admin-only hidden lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex-col">
                             <h3 class="text-lg font-bold text-gray-800 mb-6 flex-shrink-0">Grafik Aktivitas</h3>
                             <div class="relative w-full flex-1 min-h-[250px]"><canvas id="transactionChart"></canvas></div>
                         </div>
@@ -409,7 +408,7 @@
                 </div>
 
                 <!-- TAB MY PRODUCTS (MEMBER ONLY) -->
-                <div id="tab-my-products" class="tab-content space-y-6">
+                <div id="tab-my-products" class="tab-content space-y-6 w-full">
                     <h2 class="text-2xl font-bold text-gray-800">Akses Produk Saya</h2>
                     <p class="text-gray-500 mb-6 text-sm">Daftar produk digital yang telah sukses Anda beli. Klik tombol untuk mulai mempelajari.</p>
                     <div id="myProductsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -418,7 +417,7 @@
                 </div>
 
                 <!-- TAB MEMBER (ADMIN ONLY) -->
-                <div id="tab-member" class="tab-content space-y-6">
+                <div id="tab-member" class="tab-content space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                             <div>
@@ -441,7 +440,7 @@
                 </div>
 
                 <!-- TAB PRODUK (ADMIN ONLY) -->
-                <div id="tab-produk" class="tab-content space-y-6">
+                <div id="tab-produk" class="tab-content space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                             <div>
@@ -464,7 +463,7 @@
                 </div>
 
                 <!-- TAB TRANSAKSI (ADMIN ONLY) -->
-                <div id="tab-transaksi" class="tab-content space-y-6">
+                <div id="tab-transaksi" class="tab-content space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex justify-between items-center mb-6">
                             <div>
@@ -484,7 +483,7 @@
                 </div>
 
                 <!-- TAB AFFILIATE (GLOBAL) -->
-                <div id="tab-affiliate" class="tab-content space-y-6">
+                <div id="tab-affiliate" class="tab-content space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-bold text-gray-800">Riwayat Komisi Affiliate</h3>
@@ -501,7 +500,7 @@
                 </div>
 
                 <!-- TAB SETTINGS (ADMIN ONLY) -->
-                <div id="tab-settings" class="tab-content space-y-6">
+                <div id="tab-settings" class="tab-content space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center mb-6">
                             <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl mr-3">
@@ -584,12 +583,11 @@
     </div>
 
     <script>
-        // MASUKIN URL WEB APP GAS LO DI SINI (PASTIKAN SUDAH DEPLOY "ANYONE")
+        // MASUKIN URL WEB APP GAS LO DI SINI
         const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec"; 
 
         /** 
          * SCRIPT API FETCHER TAHAN BANTING (ANTI HANG) 
-         * Dilengkapi Timeout 20 Detik & Force Error Handling
          */
         async function callAPI(action, payload = {}) {
             const controller = new AbortController();
@@ -611,22 +609,16 @@
                 
                 const text = await response.text();
                 
-                // Cek kalau ternyata masih nyasar ke doGet karena redirect browser
                 if (text.includes("Gunakan POST") || text.startsWith("API ")) {
                     throw new Error("Koneksi diblokir oleh browser. Coba refresh atau gunakan mode Incognito.");
                 }
-                
-                // Cek kalau ternyata Google ngasih respon halaman HTML Error
                 if (text.trim().startsWith('<')) {
-                    console.error("Respon Google Error/Terblokir:", text);
                     throw new Error("API Terblokir. Pastikan akses Google Script di-set ke 'Anyone'!");
                 }
-                
                 return JSON.parse(text);
                 
             } catch (error) {
                 clearTimeout(timeoutId); 
-                
                 if (error.name === 'AbortError') {
                     throw new Error("Koneksi ke database terlalu lambat (Timeout). Coba lagi.");
                 }
@@ -641,7 +633,6 @@
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
             } catch (e) {
-                console.warn("Crypto API gagal, pakai fallback string");
                 return btoa(password).substring(0, 30);
             }
         }
@@ -705,7 +696,7 @@
                 if (result.status === 'success') {
                     showToast(result.message, "success");
                     sessionStorage.setItem('wm_user', JSON.stringify(result.user));
-                    checkLoginState(); // Masuk ke dashboard
+                    checkLoginState(); 
                 } else { 
                     showToast(result.message, "error"); 
                 }
@@ -734,13 +725,13 @@
                     const domain = window.location.origin + window.location.pathname.replace('index.html', '');
                     document.getElementById('affLink').value = `${domain}/checkout.html?aff=${user.affCode}`;
 
-                    // LOGIKA RBAC (Role Based Access Control)
+                    // GANTI LOGIKA RBAC: PAKE CLASS HIDDEN, BUKAN DISPLAY:FLEX!
                     if(user.tier === 'Admin') {
-                        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-                        document.querySelectorAll('.member-only').forEach(el => el.style.display = 'none');
+                        document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                        document.querySelectorAll('.member-only').forEach(el => el.classList.add('hidden'));
                     } else {
-                        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
-                        document.querySelectorAll('.member-only').forEach(el => el.style.display = 'flex');
+                        document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                        document.querySelectorAll('.member-only').forEach(el => el.classList.remove('hidden'));
                     }
 
                     switchTab('dashboard');
@@ -751,7 +742,6 @@
                     fetchStoreSettings(true); 
                 }
             } catch (err) {
-                console.error("Session terganggu:", err);
                 sessionStorage.removeItem('wm_user');
                 document.getElementById('authView').style.display = 'flex';
                 document.getElementById('dashboardView').style.display = 'none';
@@ -767,10 +757,10 @@
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => {
-                // Reset classes while keeping tier-specific display classes
                 const isAdminOnly = el.classList.contains('admin-only');
                 const isMemberOnly = el.classList.contains('member-only');
-                el.className = `flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item ${isAdminOnly ? 'admin-only' : ''} ${isMemberOnly ? 'member-only' : ''}`;
+                const isHidden = el.classList.contains('hidden');
+                el.className = `flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item ${isAdminOnly ? 'admin-only' : ''} ${isMemberOnly ? 'member-only' : ''} ${isHidden ? 'hidden' : ''}`;
             });
             
             document.getElementById(`tab-${tabName}`).classList.add('active');
@@ -779,7 +769,8 @@
             if(activeNav) {
                 const isAdminOnly = activeNav.classList.contains('admin-only');
                 const isMemberOnly = activeNav.classList.contains('member-only');
-                activeNav.className = `flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all nav-item ${isAdminOnly ? 'admin-only' : ''} ${isMemberOnly ? 'member-only' : ''}`;
+                const isHidden = activeNav.classList.contains('hidden');
+                activeNav.className = `flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all nav-item ${isAdminOnly ? 'admin-only' : ''} ${isMemberOnly ? 'member-only' : ''} ${isHidden ? 'hidden' : ''}`;
             }
             
             const titles = { 
@@ -793,7 +784,6 @@
             };
             document.getElementById('headerTitle').innerText = titles[tabName];
 
-            // Trigger Fetch Data
             if(tabName === 'dashboard') { fetchDashboardStats(); setupChart(); }
             else if(tabName === 'member') { fetchData('getMembers', 'tableBodyMembers', renderMembers); }
             else if(tabName === 'produk') { fetchData('getProducts', 'tableBodyProducts', renderProducts); }
@@ -856,10 +846,8 @@
         async function fetchData(action, tbodyId, renderFunc) {
             const tbody = document.getElementById(tbodyId);
             const user = JSON.parse(sessionStorage.getItem('wm_user'));
-            
             tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat data...</td></tr>`;
             try {
-                // Pass user context for affiliate filtering
                 const result = await callAPI(action, { tier: user.tier, affCode: user.affCode }); 
                 if(result.status === 'success' && result.data && result.data.length > 0) {
                     tbody.innerHTML = '';
@@ -876,7 +864,10 @@
             if(!dateString) return '-';
             return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
         }
-        function formatRupiah(nom) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(nom || 0); }
+        
+        function formatRupiah(nom) { 
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(nom || 0); 
+        }
 
         function renderMembers(tbody, row) {
             const tierClass = row['Tier_Akses'] === 'Admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700';
@@ -1002,10 +993,7 @@
             
             const commType = document.getElementById('addProdCommType').value;
             let commValue = document.getElementById('addProdComm').value;
-            
-            if(commType === 'persentase') {
-                commValue = commValue + '%';
-            }
+            if(commType === 'persentase') commValue = commValue + '%';
 
             const payload = {
                 nama: document.getElementById('addProdName').value,
@@ -1066,11 +1054,7 @@
                     closeModal('modalChangePassword'); 
                     document.getElementById('formChangePassword').reset();
                 } else showToast(res.message, "error");
-            } catch (e) { 
-                showToast("Gagal memproses password", "error"); 
-            } finally { 
-                hideLoading(); 
-            }
+            } catch (e) { showToast("Gagal memproses password", "error"); } finally { hideLoading(); }
         }
 
         function copyAffiliateLink(btnElement) {
@@ -1132,7 +1116,6 @@
                         
                         const waStr = String(set.waAdmin || "");
                         document.getElementById('setWa').value = waStr.startsWith('62') ? waStr.substring(2) : waStr;
-                        
                         document.getElementById('setQris').value = set.qrisImage || "";
                         
                         if(document.getElementById('setFormName')) document.getElementById('setFormName').value = set.formName || "required";
@@ -1180,19 +1163,18 @@
 
         function setupChart() {
             const ctx = document.getElementById('transactionChart');
-            if (!ctx) return; // Fail gracefully if not on admin dashboard
-            
+            if(!ctx) return;
+            const context = ctx.getContext('2d');
             if(window.myChart) return;
-            let gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+            let gradient = context.createLinearGradient(0, 0, 0, 400);
             gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)'); gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
-            window.myChart = new Chart(ctx, {
+            window.myChart = new Chart(context, {
                 type: 'line',
                 data: { labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'], datasets: [{ label: 'Klik Link', data: [12, 19, 15, 25, 22, 30, 28], borderColor: '#3b82f6', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
-        // Initialize App
         window.addEventListener('DOMContentLoaded', () => checkLoginState());
     </script>
 </body>
