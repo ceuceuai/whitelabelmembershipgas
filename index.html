@@ -76,6 +76,9 @@
         }
         .modal-overlay.active { display: flex; }
         .modal-overlay.active .modal-content { transform: scale(1); }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body class="bg-bglight text-gray-800 font-sans h-screen overflow-hidden">
@@ -87,7 +90,6 @@
 
     <div id="toast" class="toast-msg">Pesan disini</div>
 
-    <!-- MODAL TAMBAH PRODUK -->
     <div id="modalAddProduct" class="modal-overlay">
         <div class="modal-content relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeModal('modalAddProduct')" class="absolute top-6 right-6 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -133,7 +135,6 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH MEMBER -->
     <div id="modalAddMember" class="modal-overlay">
         <div class="modal-content relative">
             <button onclick="closeModal('modalAddMember')" class="absolute top-6 right-6 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -162,6 +163,27 @@
                 </div>
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-colors mt-4">
                     <i class="fa-solid fa-user-plus mr-2"></i> Tambahkan Akun
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalChangePassword" class="modal-overlay">
+        <div class="modal-content relative">
+            <button onclick="closeModal('modalChangePassword')" class="absolute top-6 right-6 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Ganti Password</h3>
+            <p class="text-sm text-gray-500 mb-6">Amankan akun Anda dengan mengganti password.</p>
+            <form id="formChangePassword" onsubmit="submitChangePassword(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Password Lama</label>
+                    <input type="password" id="oldPass" required class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Password Baru</label>
+                    <input type="password" id="newPass" required class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-500 outline-none" placeholder="Minimal 6 karakter">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl mt-4 transition-colors">
+                    <i class="fa-solid fa-key mr-2"></i> Simpan Password Baru
                 </button>
             </form>
         </div>
@@ -247,19 +269,30 @@
                 <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all nav-item">
                     <i class="fa-solid fa-border-all w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Dashboard</span>
                 </a>
-                <a href="#" onclick="switchTab('member')" id="nav-member" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
+                
+                <!-- MENU MEMBER ONLY -->
+                <a href="#" onclick="switchTab('my-products')" id="nav-my-products" class="member-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item" style="display:none;">
+                    <i class="fa-solid fa-box-open w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Produk Saya</span>
+                </a>
+
+                <!-- MENU ADMIN ONLY -->
+                <a href="#" onclick="switchTab('member')" id="nav-member" class="admin-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item" style="display:none;">
                     <i class="fa-solid fa-users w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Member</span>
                 </a>
-                <a href="#" onclick="switchTab('produk')" id="nav-produk" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
+                <a href="#" onclick="switchTab('produk')" id="nav-produk" class="admin-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item" style="display:none;">
                     <i class="fa-solid fa-box w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Produk</span>
                 </a>
-                <a href="#" onclick="switchTab('transaksi')" id="nav-transaksi" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
+                <a href="#" onclick="switchTab('transaksi')" id="nav-transaksi" class="admin-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item" style="display:none;">
                     <i class="fa-solid fa-wallet w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Transaksi</span>
                 </a>
+                
+                <!-- MENU GLOBAL -->
                 <a href="#" onclick="switchTab('affiliate')" id="nav-affiliate" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-handshake w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Affiliate</span>
                 </a>
-                <a href="#" onclick="switchTab('settings')" id="nav-settings" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item admin-only" style="display:none;">
+
+                <!-- MENU ADMIN ONLY -->
+                <a href="#" onclick="switchTab('settings')" id="nav-settings" class="admin-only items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item mt-4" style="display:none;">
                     <i class="fa-solid fa-gear w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Pengaturan</span>
                 </a>
             </div>
@@ -272,7 +305,13 @@
                         <p id="sidebarUserTier" class="text-xs text-gray-500">Member</p>
                     </div>
                 </div>
-                <button onclick="doLogout()" class="mt-4 flex items-center text-red-400 hover:text-red-300 text-sm font-medium px-2 py-1 w-full text-left transition-colors">
+                
+                <!-- TOMBOL GANTI PASSWORD -->
+                <button onclick="openModal('modalChangePassword')" class="mt-5 flex items-center text-gray-400 hover:text-white text-sm font-medium px-2 py-1 w-full text-left transition-colors">
+                    <i class="fa-solid fa-key mr-2"></i> Ganti Password
+                </button>
+                
+                <button onclick="doLogout()" class="mt-2 flex items-center text-red-400 hover:text-red-300 text-sm font-medium px-2 py-1 w-full text-left transition-colors">
                     <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Keluar Akun
                 </button>
             </div>
@@ -282,23 +321,24 @@
             <header class="h-20 bg-white/80 backdrop-blur-md px-8 flex items-center justify-between border-b border-gray-100 flex-shrink-0 sticky top-0 z-10">
                 <div><h2 class="text-xl font-bold text-gray-800" id="headerTitle">Dashboard</h2></div>
                 <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold" id="headerUserInisial">U</div>
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold shadow-sm" id="headerUserInisial">U</div>
                 </div>
             </header>
 
             <div class="flex-1 overflow-y-auto p-8 relative">
                 
                 <!-- TAB DASHBOARD -->
-                <div id="tab-dashboard" class="tab-content space-y-6">
+                <div id="tab-dashboard" class="tab-content active space-y-6">
                     <div class="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg flex items-center justify-between relative overflow-hidden">
                         <div class="relative z-10">
                             <h2 class="text-2xl font-bold mb-1">Halo, <span id="welcomeName">Member</span>! 👋</h2>
-                            <p class="text-indigo-100 text-sm">Pantau aktivitas penjualan dan komisi affiliate Anda hari ini.</p>
+                            <p class="text-indigo-100 text-sm">Pantau aktivitas dan perkembangan Anda hari ini.</p>
                         </div>
                         <div class="absolute -right-10 -bottom-20 opacity-30 text-9xl"><i class="fa-solid fa-chart-line"></i></div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- ADMIN STATS -->
+                    <div id="adminStatsArea" class="admin-only grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display: none;">
                         <div class="bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Member</p>
                             <h3 id="statTotalMember" class="text-3xl font-extrabold mb-1">0</h3>
@@ -321,15 +361,42 @@
                         </div>
                     </div>
 
+                    <!-- MEMBER STATS -->
+                    <div id="memberStatsArea" class="member-only grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display: none;">
+                        <div class="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+                            <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Referral (Lead)</p>
+                            <h3 id="memStatReferral" class="text-3xl font-extrabold mb-1">0</h3>
+                            <div class="card-decoration"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+                            <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Komisi Pending</p>
+                            <h3 id="memStatPending" class="text-3xl font-extrabold mb-1">Rp 0</h3>
+                            <div class="card-decoration"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+                            <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Komisi Dibayar</p>
+                            <h3 id="memStatDibayar" class="text-3xl font-extrabold mb-1">Rp 0</h3>
+                            <div class="card-decoration"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+                            <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Komisi</p>
+                            <h3 id="memStatTotal" class="text-3xl font-extrabold mb-1">Rp 0</h3>
+                            <div class="card-decoration"></div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <!-- CHART ADMIN ONLY -->
+                        <div class="admin-only lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100" style="display:none;">
                             <h3 class="text-lg font-bold text-gray-800 mb-6">Grafik Aktivitas</h3>
                             <div class="relative h-64 w-full"><canvas id="transactionChart"></canvas></div>
                         </div>
-                        <div class="flex flex-col gap-6">
+                        
+                        <!-- AFFILIATE LINK (GLOBAL) -->
+                        <div class="flex flex-col gap-6 lg:col-span-1">
                             <div class="bg-white rounded-2xl p-6 shadow-sm border border-blue-100">
                                 <h3 class="text-base font-bold text-gray-800 mb-2"><i class="fa-solid fa-link text-blue-500 mr-2"></i> Link Affiliate Anda</h3>
-                                <p class="text-xs text-gray-500 mb-4">Sebarkan link ini, dapatkan komisi Rp 50.000 per penjualan sukses!</p>
+                                <p class="text-xs text-gray-500 mb-4">Sebarkan link ini, dapatkan komisi tambahan untuk setiap penjualan sukses!</p>
                                 <div class="relative mb-2">
                                     <input type="text" id="affLink" value="..." readonly class="w-full bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-lg px-4 py-3 outline-none">
                                 </div>
@@ -341,15 +408,24 @@
                     </div>
                 </div>
 
-                <!-- TAB MEMBER -->
-                <div id="tab-member" class="tab-content space-y-6" style="display: none;">
+                <!-- TAB MY PRODUCTS (MEMBER ONLY) -->
+                <div id="tab-my-products" class="tab-content space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Akses Produk Saya</h2>
+                    <p class="text-gray-500 mb-6 text-sm">Daftar produk digital yang telah sukses Anda beli. Klik tombol untuk mulai mempelajari.</p>
+                    <div id="myProductsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Dimuat dari Javascript -->
+                    </div>
+                </div>
+
+                <!-- TAB MEMBER (ADMIN ONLY) -->
+                <div id="tab-member" class="tab-content space-y-6">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                             <div>
                                 <h3 class="text-lg font-bold text-gray-800">Daftar Akun Pengguna</h3>
                                 <p class="text-sm text-gray-500">Kelola member terdaftar di ekosistem Anda.</p>
                             </div>
-                            <button onclick="openModal('modalAddMember')" class="admin-only hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl shadow-sm text-sm transition-colors whitespace-nowrap">
+                            <button onclick="openModal('modalAddMember')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl shadow-sm text-sm transition-colors whitespace-nowrap">
                                 <i class="fa-solid fa-user-plus mr-1"></i> Tambah Member
                             </button>
                         </div>
@@ -364,15 +440,15 @@
                     </div>
                 </div>
 
-                <!-- TAB PRODUK -->
-                <div id="tab-produk" class="tab-content space-y-6" style="display: none;">
+                <!-- TAB PRODUK (ADMIN ONLY) -->
+                <div id="tab-produk" class="tab-content space-y-6">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                             <div>
                                 <h3 class="text-lg font-bold text-gray-800">Katalog Produk Digital</h3>
                                 <p class="text-sm text-gray-500">Daftar produk yang aktif dan siap dijual.</p>
                             </div>
-                            <button onclick="openModal('modalAddProduct')" class="admin-only hidden bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-xl shadow-sm text-sm transition-colors whitespace-nowrap">
+                            <button onclick="openModal('modalAddProduct')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-xl shadow-sm text-sm transition-colors whitespace-nowrap">
                                 <i class="fa-solid fa-plus mr-1"></i> Tambah Produk
                             </button>
                         </div>
@@ -387,8 +463,8 @@
                     </div>
                 </div>
 
-                <!-- TAB TRANSAKSI -->
-                <div id="tab-transaksi" class="tab-content space-y-6" style="display: none;">
+                <!-- TAB TRANSAKSI (ADMIN ONLY) -->
+                <div id="tab-transaksi" class="tab-content space-y-6">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex justify-between items-center mb-6">
                             <div>
@@ -407,8 +483,8 @@
                     </div>
                 </div>
 
-                <!-- TAB AFFILIATE -->
-                <div id="tab-affiliate" class="tab-content space-y-6" style="display: none;">
+                <!-- TAB AFFILIATE (GLOBAL) -->
+                <div id="tab-affiliate" class="tab-content space-y-6">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-bold text-gray-800">Riwayat Komisi Affiliate</h3>
@@ -424,8 +500,8 @@
                     </div>
                 </div>
 
-                <!-- TAB SETTINGS -->
-                <div id="tab-settings" class="tab-content space-y-6" style="display: none;">
+                <!-- TAB SETTINGS (ADMIN ONLY) -->
+                <div id="tab-settings" class="tab-content space-y-6">
                     <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center mb-6">
                             <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl mr-3">
@@ -520,8 +596,6 @@
             const timeoutId = setTimeout(() => controller.abort(), 20000); 
 
             try {
-                // HAPUS headers Content-Type biar browser ngatur sendiri (text/plain) 
-                // dan tambahin redirect: 'follow' biar gak nyasar jadi GET
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     redirect: 'follow',
@@ -567,7 +641,6 @@
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
             } catch (e) {
-                // Fallback kalau browser/device gak support crypto
                 console.warn("Crypto API gagal, pakai fallback string");
                 return btoa(password).substring(0, 30);
             }
@@ -627,7 +700,6 @@
                     };
                 }
                 
-                // Manggil API Tahan Banting yang baru kita buat
                 const result = await callAPI(action, payload);
                 
                 if (result.status === 'success') {
@@ -640,7 +712,7 @@
             } catch (error) { 
                 showToast(error.message, "error"); 
             } finally { 
-                hideLoading(); // Ini DIJAMIN pasti nutup loadingnya!
+                hideLoading(); 
             }
         }
 
@@ -662,9 +734,13 @@
                     const domain = window.location.origin + window.location.pathname.replace('index.html', '');
                     document.getElementById('affLink').value = `${domain}/checkout.html?aff=${user.affCode}`;
 
+                    // LOGIKA RBAC (Role Based Access Control)
                     if(user.tier === 'Admin') {
                         document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-                        document.querySelectorAll('button.admin-only').forEach(el => el.classList.remove('hidden'));
+                        document.querySelectorAll('.member-only').forEach(el => el.style.display = 'none');
+                    } else {
+                        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+                        document.querySelectorAll('.member-only').forEach(el => el.style.display = 'flex');
                     }
 
                     switchTab('dashboard');
@@ -689,18 +765,35 @@
         }
 
         function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => {
-                el.className = "flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item " + (el.classList.contains('admin-only') ? 'admin-only' : '');
+                // Reset classes while keeping tier-specific display classes
+                const isAdminOnly = el.classList.contains('admin-only');
+                const isMemberOnly = el.classList.contains('member-only');
+                el.className = `flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item ${isAdminOnly ? 'admin-only' : ''} ${isMemberOnly ? 'member-only' : ''}`;
             });
             
-            document.getElementById(`tab-${tabName}`).style.display = 'block';
-            document.getElementById(`nav-${tabName}`).className = "flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all nav-item " + (tabName === 'settings' ? 'admin-only' : '');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
             
-            const titles = { 'dashboard': 'Dashboard', 'member': 'Kelola Member', 'produk': 'Katalog Produk', 'transaksi': 'Riwayat Transaksi', 'affiliate': 'Komisi Affiliate', 'settings': 'Pengaturan Toko' };
+            const activeNav = document.getElementById(`nav-${tabName}`);
+            if(activeNav) {
+                const isAdminOnly = activeNav.classList.contains('admin-only');
+                const isMemberOnly = activeNav.classList.contains('member-only');
+                activeNav.className = `flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all nav-item ${isAdminOnly ? 'admin-only' : ''} ${isMemberOnly ? 'member-only' : ''}`;
+            }
+            
+            const titles = { 
+                'dashboard': 'Dashboard', 
+                'my-products': 'Produk Saya',
+                'member': 'Kelola Member', 
+                'produk': 'Katalog Produk', 
+                'transaksi': 'Riwayat Transaksi', 
+                'affiliate': 'Komisi Affiliate', 
+                'settings': 'Pengaturan Toko' 
+            };
             document.getElementById('headerTitle').innerText = titles[tabName];
 
-            // Trigger Fetch Data sesuai menu yang di klik
+            // Trigger Fetch Data
             if(tabName === 'dashboard') { fetchDashboardStats(); setupChart(); }
             else if(tabName === 'member') { fetchData('getMembers', 'tableBodyMembers', renderMembers); }
             else if(tabName === 'produk') { fetchData('getProducts', 'tableBodyProducts', renderProducts); }
@@ -709,11 +802,65 @@
             else if(tabName === 'settings') { fetchStoreSettings(false); }
         }
 
+        async function fetchDashboardStats() {
+            try {
+                const user = JSON.parse(sessionStorage.getItem('wm_user'));
+                if(user.tier === 'Admin') {
+                    const stats = await callAPI('getStats');
+                    if(stats.status === 'success') {
+                        document.getElementById('statTotalMember').innerText = stats.totalMember;
+                        document.getElementById('statTotalTx').innerText = stats.totalTransaksi;
+                        document.getElementById('statTotalRev').innerText = formatRupiah(stats.totalPendapatan);
+                        document.getElementById('statActiveMember').innerText = stats.memberAktif;
+                    }
+                } else {
+                    const res = await callAPI('getMemberDashboard', { email: user.email, affCode: user.affCode });
+                    if(res.status === 'success') {
+                        document.getElementById('memStatReferral').innerText = res.stats.referral;
+                        document.getElementById('memStatPending').innerText = formatRupiah(res.stats.pending);
+                        document.getElementById('memStatDibayar').innerText = formatRupiah(res.stats.dibayar);
+                        document.getElementById('memStatTotal').innerText = formatRupiah(res.stats.total);
+                        renderMyProductsGrid(res.myProducts);
+                    }
+                }
+            } catch (e) { console.error("Stats fetching error:", e); }
+        }
+
+        function renderMyProductsGrid(products) {
+            const grid = document.getElementById('myProductsGrid');
+            grid.innerHTML = '';
+            if(products.length === 0) {
+                grid.innerHTML = `<div class="col-span-full p-10 text-center bg-white rounded-2xl border border-gray-100"><i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i><p class="text-gray-500 font-medium">Anda belum memiliki produk yang aktif.</p><p class="text-sm text-gray-400">Silakan lakukan pembelian terlebih dahulu.</p></div>`;
+                return;
+            }
+            products.forEach(p => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col group">
+                        <div class="h-40 overflow-hidden bg-gray-50 relative">
+                            <img src="${p.image}" alt="${p.nama}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x300/eeeeee/999999?text=Gambar+Rusak'">
+                            <div class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm"><i class="fa-solid fa-check-circle mr-1"></i>PAID</div>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col">
+                            <h3 class="text-lg font-bold text-gray-800 mb-2 leading-tight">${p.nama}</h3>
+                            <div class="mt-auto pt-4">
+                                <a href="${p.link}" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-2.5 rounded-xl transition-colors shadow-sm">
+                                    <i class="fa-solid fa-unlock-keyhole mr-2"></i> Buka Akses
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         async function fetchData(action, tbodyId, renderFunc) {
             const tbody = document.getElementById(tbodyId);
+            const user = JSON.parse(sessionStorage.getItem('wm_user'));
+            
             tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat data...</td></tr>`;
             try {
-                const result = await callAPI(action); 
+                // Pass user context for affiliate filtering
+                const result = await callAPI(action, { tier: user.tier, affCode: user.affCode }); 
                 if(result.status === 'success' && result.data && result.data.length > 0) {
                     tbody.innerHTML = '';
                     result.data.forEach(row => renderFunc(tbody, row));
@@ -731,19 +878,29 @@
         }
         function formatRupiah(nom) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(nom || 0); }
 
+        function renderMembers(tbody, row) {
+            const tierClass = row['Tier_Akses'] === 'Admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700';
+            tbody.innerHTML += `<tr>
+                <td class="font-mono text-xs text-gray-500">${row['User_ID']}</td>
+                <td class="font-bold text-gray-800">${row['Nama']}</td>
+                <td class="text-gray-600">${row['Email']}</td>
+                <td><span class="px-2 py-1 ${tierClass} rounded text-xs font-bold">${row['Tier_Akses']}</span></td>
+                <td class="font-mono text-xs text-gray-500 bg-gray-50 p-1 rounded inline-block mt-2">${row['Affiliate_Code']}</td>
+                <td class="text-sm text-gray-500">${formatDate(row['Tanggal_Daftar'])}</td>
+            </tr>`;
+        }
+
         function renderProducts(tbody, row) {
             const imgUrl = row['Image_URL'] || 'https://placehold.co/100x100/eeeeee/999999?text=No+Image';
             const linkAkses = row['Link_Akses'] && row['Link_Akses'] !== "" ? `<a href="${row['Link_Akses']}" target="_blank" class="text-xs bg-gray-100 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg font-medium transition-colors inline-flex items-center"><i class="fa-solid fa-link mr-1"></i> Buka Akses</a>` : '-';
             
             let komisiTampil = row['Komisi_Affiliate'];
-            // Jika ada tanda % berarti persentase, jika tidak asumsi nominal
             if(String(komisiTampil).includes('%')) {
                 komisiTampil = `<span class="text-purple-600 font-bold">${komisiTampil}</span>`;
             } else {
                 komisiTampil = `<span class="text-blue-600 font-medium">${formatRupiah(komisiTampil)}</span>`;
             }
 
-            // GENERATE LINK CHECKOUT OTOMATIS
             const domain = window.location.origin + window.location.pathname.replace('index.html', '');
             const checkoutUrl = `${domain}/checkout.html?prod=${row['Product_ID']}`;
 
@@ -771,7 +928,6 @@
             </tr>`;
         }
 
-        // FUNGSI COPY LINK CHECKOUT
         function copyToClipboard(btnElement, text) {
             const tempInput = document.createElement("input");
             tempInput.value = text;
@@ -799,7 +955,6 @@
                 actionBtn = `<button onclick="approveTx('${row['Transaction_ID']}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-colors whitespace-nowrap"><i class="fa-solid fa-check mr-1"></i> Approve</button>`;
             }
 
-            // Susun data pembeli
             const namaPembeli = row['Nama_Pembeli'] || '-';
             const waPembeli = row['WA_Pembeli'] || '-';
             
@@ -891,16 +1046,31 @@
             } catch (e) { showToast("Gagal memproses. Coba ulangi.", "error"); } finally { hideLoading(); }
         }
 
-        async function fetchDashboardStats() {
+        async function submitChangePassword(e) {
+            e.preventDefault();
+            const oldPass = document.getElementById('oldPass').value;
+            const newPass = document.getElementById('newPass').value;
+            if(newPass.length < 6) { showToast("Password baru minimal 6 karakter!", "error"); return; }
+            
+            showLoading("Menyimpan password...");
             try {
-                const stats = await callAPI('getStats');
-                if(stats.status === 'success') {
-                    document.getElementById('statTotalMember').innerText = stats.totalMember;
-                    document.getElementById('statTotalTx').innerText = stats.totalTransaksi;
-                    document.getElementById('statTotalRev').innerText = stats.totalPendapatan;
-                    document.getElementById('statActiveMember').innerText = stats.memberAktif;
-                }
-            } catch (e) { console.error("Stats fetching error:", e); }
+                const user = JSON.parse(sessionStorage.getItem('wm_user'));
+                const payload = { 
+                    userId: user.id, 
+                    oldPassword: await hashPassword(oldPass), 
+                    newPassword: await hashPassword(newPass) 
+                };
+                const res = await callAPI('changePassword', payload);
+                if(res.status === 'success') {
+                    showToast(res.message, "success"); 
+                    closeModal('modalChangePassword'); 
+                    document.getElementById('formChangePassword').reset();
+                } else showToast(res.message, "error");
+            } catch (e) { 
+                showToast("Gagal memproses password", "error"); 
+            } finally { 
+                hideLoading(); 
+            }
         }
 
         function copyAffiliateLink(btnElement) {
@@ -960,13 +1130,11 @@
                         document.getElementById('setStoreName').value = set.storeName || "";
                         document.getElementById('setStoreLogo').value = set.storeLogo || "";
                         
-                        // FIX: Pastikan waAdmin diubah jadi String dulu biar gak error is not a function
                         const waStr = String(set.waAdmin || "");
                         document.getElementById('setWa').value = waStr.startsWith('62') ? waStr.substring(2) : waStr;
                         
                         document.getElementById('setQris').value = set.qrisImage || "";
                         
-                        // Set nilai pengaturan form
                         if(document.getElementById('setFormName')) document.getElementById('setFormName').value = set.formName || "required";
                         if(document.getElementById('setFormWa')) document.getElementById('setFormWa').value = set.formWa || "optional";
                         
@@ -1011,9 +1179,11 @@
         }
 
         function setupChart() {
-            const ctx = document.getElementById('transactionChart').getContext('2d');
+            const ctx = document.getElementById('transactionChart');
+            if (!ctx) return; // Fail gracefully if not on admin dashboard
+            
             if(window.myChart) return;
-            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            let gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
             gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)'); gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
             window.myChart = new Chart(ctx, {
                 type: 'line',
@@ -1022,6 +1192,7 @@
             });
         }
 
+        // Initialize App
         window.addEventListener('DOMContentLoaded', () => checkLoginState());
     </script>
 </body>
