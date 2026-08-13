@@ -398,7 +398,7 @@
                         </div>
                         <div class="overflow-x-auto rounded-xl border border-gray-100">
                             <table class="w-full data-table">
-                                <thead><tr><th>Invoice</th><th>Tanggal</th><th>Email Pembeli</th><th>Produk</th><th>Total Bayar</th><th>Status</th><th>Aksi</th></tr></thead>
+                                <thead><tr><th>Invoice</th><th>Tanggal</th><th>Data Pembeli</th><th>Produk</th><th>Total Bayar</th><th>Status</th><th>Aksi</th></tr></thead>
                                 <tbody id="tableBodyTransactions">
                                     <tr><td colspan="7" class="text-center py-8 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat data...</td></tr>
                                 </tbody>
@@ -466,6 +466,25 @@
                                 </div>
                             </div>
                             
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 pb-6 border-b border-gray-100">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Kolom Nama (Checkout)</label>
+                                    <select id="setFormName" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-white">
+                                        <option value="required">Wajib Isi</option>
+                                        <option value="optional">Opsional (Boleh Kosong)</option>
+                                        <option value="hidden">Sembunyikan</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Kolom WhatsApp (Checkout)</label>
+                                    <select id="setFormWa" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-white">
+                                        <option value="required">Wajib Isi</option>
+                                        <option value="optional">Opsional (Boleh Kosong)</option>
+                                        <option value="hidden">Sembunyikan</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="mb-8">
                                 <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
                                     <label class="block text-sm font-bold text-gray-700">Daftar Rekening Bank</label>
@@ -780,9 +799,21 @@
                 actionBtn = `<button onclick="approveTx('${row['Transaction_ID']}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-colors whitespace-nowrap"><i class="fa-solid fa-check mr-1"></i> Approve</button>`;
             }
 
+            // Susun data pembeli
+            const namaPembeli = row['Nama_Pembeli'] || '-';
+            const waPembeli = row['WA_Pembeli'] || '-';
+            
             tbody.innerHTML += `<tr>
                 <td class="font-mono text-xs text-gray-500">${row['Transaction_ID']}</td>
-                <td>${formatDate(row['Tanggal'])}</td><td>${row['Email_Pembeli']}</td><td><span class="font-medium text-gray-800">${row['Produk']}</span></td>
+                <td>${formatDate(row['Tanggal'])}</td>
+                <td>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-gray-800">${namaPembeli}</span>
+                        <span class="text-xs text-gray-500">${row['Email_Pembeli']}</span>
+                        <span class="text-xs text-blue-500"><i class="fa-brands fa-whatsapp mr-1"></i>${waPembeli}</span>
+                    </div>
+                </td>
+                <td><span class="font-medium text-gray-800">${row['Produk']}</span></td>
                 <td class="font-bold text-gray-800">${formatRupiah(row['Total_Bayar'])}</td>
                 <td><span class="px-2 py-1 ${statusClass} rounded text-xs font-bold">${row['Status_Pembayaran']}</span></td>
                 <td>${actionBtn}</td>
@@ -934,6 +965,11 @@
                         document.getElementById('setWa').value = waStr.startsWith('62') ? waStr.substring(2) : waStr;
                         
                         document.getElementById('setQris').value = set.qrisImage || "";
+                        
+                        // Set nilai pengaturan form
+                        if(document.getElementById('setFormName')) document.getElementById('setFormName').value = set.formName || "required";
+                        if(document.getElementById('setFormWa')) document.getElementById('setFormWa').value = set.formWa || "optional";
+                        
                         document.getElementById('bankList').innerHTML = '';
                         if (set.banks && set.banks.length > 0) set.banks.forEach(b => addBankField(b.bank, b.rek, b.owner));
                         else addBankField();
@@ -959,8 +995,13 @@
             });
 
             const payload = {
-                storeName: document.getElementById('setStoreName').value, storeLogo: document.getElementById('setStoreLogo').value,
-                waAdmin: waRaw ? "62" + waRaw : "", qrisImage: document.getElementById('setQris').value, banks: banksArr
+                storeName: document.getElementById('setStoreName').value, 
+                storeLogo: document.getElementById('setStoreLogo').value,
+                waAdmin: waRaw ? "62" + waRaw : "", 
+                qrisImage: document.getElementById('setQris').value, 
+                banks: banksArr,
+                formName: document.getElementById('setFormName').value,
+                formWa: document.getElementById('setFormWa').value
             };
             try {
                 const result = await callAPI('saveSettings', payload);
