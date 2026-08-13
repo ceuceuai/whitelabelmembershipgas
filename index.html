@@ -64,7 +64,6 @@
         .data-table tr:last-child td { border-bottom: none; }
         .data-table tr:hover { background-color: #f8fafc; }
 
-        /* Modal Overlay */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
             z-index: 9990; display: none; align-items: center; justify-content: center;
@@ -90,7 +89,6 @@
 
     <div id="toast" class="toast-msg">Pesan disini</div>
 
-    <!-- MODAL TAMBAH PRODUK -->
     <div id="modalAddProduct" class="modal-overlay">
         <div class="modal-content relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeModal('modalAddProduct')" class="absolute top-6 right-6 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -136,7 +134,6 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH MEMBER -->
     <div id="modalAddMember" class="modal-overlay">
         <div class="modal-content relative">
             <button onclick="closeModal('modalAddMember')" class="absolute top-6 right-6 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -170,7 +167,6 @@
         </div>
     </div>
 
-    <!-- MODAL GANTI PASSWORD -->
     <div id="modalChangePassword" class="modal-overlay">
         <div class="modal-content relative">
             <button onclick="closeModal('modalChangePassword')" class="absolute top-6 right-6 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -257,6 +253,7 @@
     </div>
 
     <div id="dashboardView" class="h-full w-full flex overflow-hidden" style="display: none;">
+        
         <aside class="w-64 bg-sidebar text-gray-300 flex-col h-full hidden md:flex flex-shrink-0 relative z-30 shadow-xl">
             <div class="h-20 flex items-center px-6 border-b border-gray-800 flex-shrink-0">
                 <div id="sidebarBrandLogo" class="w-10 h-10 bg-brandblue rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30 mr-3 overflow-hidden">
@@ -268,7 +265,6 @@
                 </div>
             </div>
 
-            <!-- GAK PAKE STYLE="DISPLAY:NONE" LAGI, MURNI PAKE KELAS 'HIDDEN' -->
             <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
                 <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center px-4 py-3 bg-brandblue text-white rounded-xl shadow-md group transition-all nav-item">
                     <i class="fa-solid fa-border-all w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Dashboard</span>
@@ -281,9 +277,11 @@
                 <a href="#" onclick="switchTab('member')" id="nav-member" class="admin-only hidden items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-users w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Member</span>
                 </a>
+                
                 <a href="#" onclick="switchTab('produk')" id="nav-produk" class="admin-only hidden items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-box w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Produk</span>
                 </a>
+                
                 <a href="#" onclick="switchTab('transaksi')" id="nav-transaksi" class="admin-only hidden items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item">
                     <i class="fa-solid fa-wallet w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Transaksi</span>
                 </a>
@@ -292,7 +290,7 @@
                     <i class="fa-solid fa-handshake w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Affiliate</span>
                 </a>
 
-                <a href="#" onclick="switchTab('settings')" id="nav-settings" class="admin-only hidden items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item mt-4">
+                <a href="#" onclick="switchTab('settings')" id="nav-settings" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-sidebarhover rounded-xl group transition-all nav-item mt-4">
                     <i class="fa-solid fa-gear w-6 text-center text-lg"></i><span class="ml-3 text-sm font-medium">Pengaturan</span>
                 </a>
             </div>
@@ -326,7 +324,6 @@
 
             <div class="flex-1 overflow-y-auto p-4 md:p-8 relative w-full">
                 
-                <!-- TAB DASHBOARD -->
                 <div id="tab-dashboard" class="tab-content active space-y-6 w-full">
                     <div class="bg-indigo-600 rounded-2xl p-6 md:p-8 text-white shadow-lg flex items-center justify-between relative overflow-hidden min-h-[140px]">
                         <div class="relative z-10">
@@ -336,7 +333,7 @@
                         <div class="absolute -right-10 -bottom-20 opacity-30 text-9xl"><i class="fa-solid fa-chart-line"></i></div>
                     </div>
 
-                    <!-- ADMIN STATS (PAKE GRID & HIDDEN CLASS, BUKAN DISPLAY NONE) -->
+                    <!-- Admin Stats Grid -->
                     <div id="adminStatsArea" class="admin-only hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
                         <div class="bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Member</p>
@@ -360,7 +357,7 @@
                         </div>
                     </div>
 
-                    <!-- MEMBER STATS -->
+                    <!-- Member Stats Grid -->
                     <div id="memberStatsArea" class="member-only hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
                         <div class="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
                             <p class="text-xs font-bold tracking-wider uppercase opacity-80 mb-2">Total Referral (Lead)</p>
@@ -385,14 +382,13 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
-                        <!-- CHART ADMIN ONLY -->
-                        <div class="admin-only hidden lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex-col">
+                        
+                        <div class="admin-only hidden lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col h-full">
                             <h3 class="text-lg font-bold text-gray-800 mb-6 flex-shrink-0">Grafik Aktivitas</h3>
                             <div class="relative w-full flex-1 min-h-[250px]"><canvas id="transactionChart"></canvas></div>
                         </div>
                         
-                        <!-- AFFILIATE LINK (GLOBAL) -->
-                        <div class="flex flex-col gap-6 lg:col-span-1">
+                        <div class="flex flex-col gap-6 lg:col-span-1 h-full">
                             <div class="bg-white rounded-2xl p-6 shadow-sm border border-blue-100 h-full flex flex-col">
                                 <h3 class="text-base font-bold text-gray-800 mb-2"><i class="fa-solid fa-link text-blue-500 mr-2"></i> Link Affiliate Anda</h3>
                                 <p class="text-xs text-gray-500 mb-4 flex-1">Sebarkan link ini, dapatkan komisi tambahan untuk setiap penjualan sukses!</p>
@@ -404,10 +400,10 @@
                                 </button>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
-                <!-- TAB MY PRODUCTS (MEMBER ONLY) -->
                 <div id="tab-my-products" class="tab-content space-y-6 w-full">
                     <h2 class="text-2xl font-bold text-gray-800">Akses Produk Saya</h2>
                     <p class="text-gray-500 mb-6 text-sm">Daftar produk digital yang telah sukses Anda beli. Klik tombol untuk mulai mempelajari.</p>
@@ -416,7 +412,6 @@
                     </div>
                 </div>
 
-                <!-- TAB MEMBER (ADMIN ONLY) -->
                 <div id="tab-member" class="tab-content space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -439,7 +434,6 @@
                     </div>
                 </div>
 
-                <!-- TAB PRODUK (ADMIN ONLY) -->
                 <div id="tab-produk" class="tab-content space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -462,7 +456,6 @@
                     </div>
                 </div>
 
-                <!-- TAB TRANSAKSI (ADMIN ONLY) -->
                 <div id="tab-transaksi" class="tab-content space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex justify-between items-center mb-6">
@@ -482,7 +475,6 @@
                     </div>
                 </div>
 
-                <!-- TAB AFFILIATE (GLOBAL) -->
                 <div id="tab-affiliate" class="tab-content space-y-6 w-full">
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <div class="flex justify-between items-center mb-6">
@@ -490,7 +482,7 @@
                         </div>
                         <div class="overflow-x-auto rounded-xl border border-gray-100">
                             <table class="w-full data-table">
-                                <thead><tr><th>ID Komisi</th><th>Tanggal</th><th>Kode Affiliate</th><th>Nominal</th><th>Invoice Ref</th><th>Status</th></tr></thead>
+                                <thead><tr><th>Tanggal & ID</th><th>Affiliate</th><th>Nominal</th><th>Rekening Tujuan</th><th>Status</th><th class="admin-only hidden">Aksi</th></tr></thead>
                                 <tbody id="tableBodyCommissions">
                                     <tr><td colspan="6" class="text-center py-8 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat data...</td></tr>
                                 </tbody>
@@ -499,9 +491,9 @@
                     </div>
                 </div>
 
-                <!-- TAB SETTINGS (ADMIN ONLY) -->
                 <div id="tab-settings" class="tab-content space-y-6 w-full">
-                    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                    
+                    <div id="adminSettingsPanel" class="admin-only hidden bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center mb-6">
                             <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl mr-3">
                                 <i class="fa-solid fa-store"></i>
@@ -576,8 +568,42 @@
                             </div>
                         </form>
                     </div>
-                </div>
 
+                    <!-- Member Bank Settings Panel -->
+                    <div id="memberSettingsPanel" class="member-only hidden bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                        <div class="flex items-center mb-6">
+                            <div class="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-xl mr-3">
+                                <i class="fa-solid fa-money-check-dollar"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">Rekening Pencairan Komisi</h3>
+                                <p class="text-sm text-gray-500">Pastikan data rekening benar agar komisi affiliate sampai ke tangan Anda.</p>
+                            </div>
+                        </div>
+                        <form id="memberBankForm" onsubmit="handleSaveMemberBank(event)">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Nama Bank / E-Wallet</label>
+                                    <input type="text" id="memBankName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="Contoh: BCA / GoPay">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Nomor Rekening</label>
+                                    <input type="text" id="memBankRek" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="1234567890">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Nama Pemilik Rekening</label>
+                                    <input type="text" id="memBankOwner" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none transition-all" placeholder="Sesuai buku tabungan">
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-gray-100">
+                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-lg shadow-green-500/30 flex items-center">
+                                    <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan Rekening
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
             </div>
         </main>
     </div>
@@ -586,9 +612,6 @@
         // MASUKIN URL WEB APP GAS LO DI SINI
         const API_URL = "https://script.google.com/macros/s/AKfycbxWtHODmLsT71J1pOqybXoKpucs2sjxWnEi01pe0V95b4Mj8tRyZTW8Y5Pw16uAsEIe/exec"; 
 
-        /** 
-         * SCRIPT API FETCHER TAHAN BANTING (ANTI HANG) 
-         */
         async function callAPI(action, payload = {}) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 20000); 
@@ -725,7 +748,6 @@
                     const domain = window.location.origin + window.location.pathname.replace('index.html', '');
                     document.getElementById('affLink').value = `${domain}/checkout.html?aff=${user.affCode}`;
 
-                    // GANTI LOGIKA RBAC: PAKE CLASS HIDDEN, BUKAN DISPLAY:FLEX!
                     if(user.tier === 'Admin') {
                         document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
                         document.querySelectorAll('.member-only').forEach(el => el.classList.add('hidden'));
@@ -789,7 +811,11 @@
             else if(tabName === 'produk') { fetchData('getProducts', 'tableBodyProducts', renderProducts); }
             else if(tabName === 'transaksi') { fetchData('getTransactions', 'tableBodyTransactions', renderTransactions); }
             else if(tabName === 'affiliate') { fetchData('getCommissions', 'tableBodyCommissions', renderCommissions); }
-            else if(tabName === 'settings') { fetchStoreSettings(false); }
+            else if(tabName === 'settings') { 
+                const user = JSON.parse(sessionStorage.getItem('wm_user'));
+                if(user.tier === 'Admin') fetchStoreSettings(false); 
+                else fetchMemberBank();
+            }
         }
 
         async function fetchDashboardStats() {
@@ -967,13 +993,26 @@
         }
 
         function renderCommissions(tbody, row) {
-            const statusClass = row['Status_Pencairan'] === 'PAID' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+            const isPaid = row['Status_Pencairan'] === 'PAID';
+            const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
+            const user = JSON.parse(sessionStorage.getItem('wm_user') || '{}');
+            const isAdmin = user.tier === 'Admin';
+            
+            const bankInfo = row['Bank_Info'] || '-';
+            const affDisplay = isAdmin ? `<span class="font-bold text-blue-600">${row['Affiliate_Code']}</span>` : `<span class="text-gray-500">Anda</span>`;
+            
+            let actionHtml = `<td class="admin-only hidden"></td>`;
+            if(isAdmin) {
+                if(!isPaid) actionHtml = `<td class="admin-only"><button onclick="payComm('${row['Commission_ID']}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-colors whitespace-nowrap"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Bayar</button></td>`;
+                else actionHtml = `<td class="admin-only"><span class="text-xs text-gray-400">Selesai</span></td>`;
+            }
+
             tbody.innerHTML += `<tr>
-                <td class="font-mono text-xs text-gray-500">${row['Commission_ID']}</td>
-                <td>${formatDate(row['Tanggal'])}</td><td class="font-bold text-blue-600">${row['Affiliate_Code']}</td>
-                <td class="font-bold">${formatRupiah(row['Nominal'])}</td>
-                <td class="font-mono text-xs text-gray-400">${row['Transaction_ID']}</td>
+                <td><div class="font-bold text-gray-800">${formatDate(row['Tanggal'])}</div><div class="font-mono text-[10px] text-gray-400 mt-1">${row['Commission_ID']}</div></td>
+                <td>${affDisplay}</td><td class="font-bold text-gray-800">${formatRupiah(row['Nominal'])}</td>
+                <td><span class="text-xs text-gray-600 font-medium">${bankInfo}</span></td>
                 <td><span class="px-2 py-1 ${statusClass} rounded text-xs font-bold">${row['Status_Pencairan']}</span></td>
+                ${actionHtml}
             </tr>`;
         }
 
@@ -985,6 +1024,16 @@
                 if(result.status === 'success') { showToast(result.message, "success"); fetchData('getTransactions', 'tableBodyTransactions', renderTransactions); } 
                 else showToast(result.message, "error");
             } catch (e) { showToast("Gagal terhubung ke server", "error"); } finally { hideLoading(); }
+        }
+
+        async function payComm(id) {
+            if(!confirm(`Tandai komisi ${id} sudah ditransfer/lunas?`)) return;
+            showLoading("Memproses pencairan...");
+            try {
+                const result = await callAPI('payCommission', { commId: id });
+                if(result.status === 'success') { showToast(result.message, "success"); fetchData('getCommissions', 'tableBodyCommissions', renderCommissions); } 
+                else showToast(result.message, "error");
+            } catch (e) { showToast("Gagal terhubung", "error"); } finally { hideLoading(); }
         }
 
         async function submitAddProduct(e) {
@@ -1161,6 +1210,36 @@
             } catch (error) { showToast(error.message || "Gagal menyimpan ke server.", "error"); } finally { hideLoading(); }
         }
 
+        async function fetchMemberBank() {
+            showLoading("Memuat data rekening...");
+            try {
+                const user = JSON.parse(sessionStorage.getItem('wm_user'));
+                const result = await callAPI('getMemberBank', { email: user.email });
+                if (result.status === 'success' && result.data) {
+                    document.getElementById('memBankName').value = result.data.bankName || "";
+                    document.getElementById('memBankRek').value = result.data.bankRek || "";
+                    document.getElementById('memBankOwner').value = result.data.bankOwner || "";
+                }
+            } catch (e) { showToast("Gagal memuat bank", "error"); } finally { hideLoading(); }
+        }
+
+        async function handleSaveMemberBank(e) {
+            e.preventDefault();
+            showLoading("Menyimpan rekening...");
+            try {
+                const user = JSON.parse(sessionStorage.getItem('wm_user'));
+                const payload = {
+                    email: user.email,
+                    bankName: document.getElementById('memBankName').value,
+                    bankRek: document.getElementById('memBankRek').value,
+                    bankOwner: document.getElementById('memBankOwner').value
+                };
+                const result = await callAPI('updateMemberBank', payload);
+                if (result.status === 'success') showToast(result.message, "success");
+                else showToast(result.message, "error");
+            } catch (error) { showToast("Gagal menyimpan ke server", "error"); } finally { hideLoading(); }
+        }
+
         function setupChart() {
             const ctx = document.getElementById('transactionChart');
             if(!ctx) return;
@@ -1170,7 +1249,7 @@
             gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)'); gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
             window.myChart = new Chart(context, {
                 type: 'line',
-                data: { labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'], datasets: [{ label: 'Klik Link', data: [12, 19, 15, 25, 22, 30, 28], borderColor: '#3b82f6', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4 }] },
+                data: { labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'], datasets: [{ label: 'Aktivitas', data: [12, 19, 15, 25, 22, 30, 28], borderColor: '#3b82f6', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
